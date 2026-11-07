@@ -11,7 +11,7 @@ Antes de revisar, leia:
 1. `AGENTS.md`, especialmente as regras invioláveis 1, 2, 10 e 11.
 2. `docs/ai/guides/content.md`.
 3. `docs/ai/procedures/review-content.md`, cujo checklist e formato de resultado você segue.
-4. `PLANO-IMPLEMENTACAO.md`, seções 7 e 8, para as pendências editoriais conhecidas.
+4. `docs/PLANO-IMPLEMENTACAO.md`, seções 7 e 8, para as pendências editoriais conhecidas.
 
 Princípios:
 

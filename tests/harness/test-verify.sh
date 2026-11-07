@@ -92,3 +92,120 @@ test_skips_missing_package_scripts() {
   assert_code 0
   assert_contains "pulado  pnpm lint"
 }
+
+test_full_mode_runs_performance_after_browser_tests() {
+  setup
+  mkdir -p "$TMP/bin"
+  printf '#!/usr/bin/env bash\nprintf "%%s\\n" "$1" >> "$(dirname "$0")/pnpm.calls"\n' > "$TMP/bin/pnpm"
+  chmod +x "$TMP/bin/pnpm"
+  echo '{"scripts":{"test:e2e":"x","test:performance":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --full
+  assert_code 0
+  assert_contains "ok      pnpm test:e2e"
+  assert_contains "ok      pnpm test:performance"
+}
+
+test_package_changes_require_application_checks() {
+  setup
+  mkdir -p "$TMP/bin"
+  printf '#!/usr/bin/env bash\nexit 1\n' > "$TMP/bin/pnpm"
+  chmod +x "$TMP/bin/pnpm"
+  echo '{"scripts":{"check":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --files package.json
+  assert_code 1
+  assert_contains "FALHOU  pnpm check"
+}
+
+test_fixture_preserves_shellcheck_source_resolution() {
+  setup
+  assert_file "$TMP/repo/.shellcheckrc"
+}
+
+fake_node() {
+  mkdir -p "$TMP/bin"
+  printf '#!/usr/bin/env bash\necho %s\n' "$1" > "$TMP/bin/node"
+  chmod +x "$TMP/bin/node"
+}
+
+fake_pnpm_logging() {
+  mkdir -p "$TMP/bin"
+  cat > "$TMP/bin/pnpm" <<'SH'
+#!/usr/bin/env bash
+echo "$1" >> "$(dirname "$0")/pnpm.calls"
+[ "$1" = "${PNPM_FAIL_ON:-}" ] && exit 1
+exit 0
+SH
+  chmod +x "$TMP/bin/pnpm"
+}
+
+test_fails_early_when_node_differs_from_nvmrc() {
+  setup
+  fake_node v22.23.1
+  fake_pnpm_logging
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{"check":"x","build":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 1
+  assert_contains "FALHOU  versão do Node"
+  assert_contains "v22.23.1"
+  assert_contains "nvm use"
+  assert_no_file "$TMP/bin/pnpm.calls"
+}
+
+test_accepts_node_matching_nvmrc() {
+  setup
+  fake_node v26.13.0
+  fake_pnpm_logging
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 0
+  assert_contains "ok      versão do Node"
+}
+
+test_rejects_older_patch_of_same_major() {
+  setup
+  fake_node v26.12.9
+  fake_pnpm_logging
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 1
+  assert_contains "FALHOU  versão do Node"
+}
+
+test_files_mode_checks_node_before_linting() {
+  setup
+  fake_node v22.23.1
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --files src/pages/index.astro
+  assert_code 1
+  assert_contains "FALHOU  versão do Node"
+}
+
+test_skips_browser_and_performance_checks_when_build_fails() {
+  setup
+  fake_pnpm_logging
+  echo '{"scripts":{"build":"x","test:e2e":"x","test:performance":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" PNPM_FAIL_ON=build "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --full
+  assert_code 1
+  assert_contains "FALHOU  pnpm build"
+  assert_contains "pulado  pnpm test:performance (build falhou"
+  assert_contains "pulado  pnpm test:e2e (build falhou"
+  if grep -qx "test:performance" "$TMP/bin/pnpm.calls"; then fail "Lighthouse rodou sobre um dist/ antigo"; fi
+}
+
+test_runs_assets_check_by_default() {
+  setup
+  run verify
+  assert_contains "ok      assets e referências"
+}
+
+test_files_mode_checks_assets_when_reference_changes() {
+  setup
+  echo 'x' > "$TMP/repo/assets-src/referencias/sem-registro.txt"
+  run verify --files assets-src/referencias/sem-registro.txt
+  assert_code 1
+  assert_contains "FALHOU  assets e referências"
+}

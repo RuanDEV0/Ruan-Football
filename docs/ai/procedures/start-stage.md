@@ -2,7 +2,7 @@
 
 Use quando Ruan pedir para começar, continuar ou retomar uma etapa do plano (ex.: “inicie a etapa 2”).
 
-1. **Ler a etapa.** Em `PLANO-IMPLEMENTACAO.md`, seção 4, leia Trabalho, Tarefas, Entrega, “Ruan providencia” e Validação. Leia também as seções do plano citadas na etapa.
+1. **Ler a etapa.** Em `docs/PLANO-IMPLEMENTACAO.md`, seção 4, leia Trabalho, Tarefas, Entrega, “Ruan providencia” e Validação. Leia também as seções do plano citadas na etapa.
 2. **Conferir o estado.** Veja a seção “Estado atual” do `AGENTS.md`, o checklist da etapa e o repositório (`git status`, arquivos existentes). Identifique o que já foi feito.
 3. **Conferir dependências.**
    - Etapas anteriores necessárias estão concluídas?

@@ -26,27 +26,27 @@ docs/ai/
 
 ## Como cada ferramenta recebe o contexto
 
-| Ferramenta | Arquivo lido automaticamente | Contexto por área | Roteiros |
-| --- | --- | --- | --- |
-| **Claude Code** | `CLAUDE.md` (importa `AGENTS.md`) | `.claude/rules/*.md`, carregadas pelo caminho do arquivo editado | Skills em `.claude/skills/` (`/implement-change`, `/start-stage`, `/add-project`, `/review-content`, `/create-adr`, `/verify-delivery`) e subagentes em `.claude/agents/` |
-| **Codex** (CLI, IDE e nuvem) | `AGENTS.md` | Tabela “Mapa do repositório” do `AGENTS.md` | Tabela “Procedimentos” do `AGENTS.md` |
-| **Gemini CLI** | `GEMINI.md` (importa `AGENTS.md`) | Igual ao Codex | Igual ao Codex |
-| **GitHub Copilot** (chat, revisão e agente) | `.github/copilot-instructions.md`; o agente também lê `AGENTS.md` | `.github/instructions/*.instructions.md` (`applyTo`) | Igual ao Codex |
-| **Cursor** | `AGENTS.md` | `.cursor/rules/*.mdc` (`globs`) | Igual ao Codex |
-| Outras (Aider, Windsurf, Zed…) | Configure a ferramenta para ler `AGENTS.md` | — | — |
+| Ferramenta                                  | Arquivo lido automaticamente                                      | Contexto por área                                                | Roteiros                                                                                                                                                                  |
+| ------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Claude Code**                             | `CLAUDE.md` (importa `AGENTS.md`)                                 | `.claude/rules/*.md`, carregadas pelo caminho do arquivo editado | Skills em `.claude/skills/` (`/implement-change`, `/start-stage`, `/add-project`, `/review-content`, `/create-adr`, `/verify-delivery`) e subagentes em `.claude/agents/` |
+| **Codex** (CLI, IDE e nuvem)                | `AGENTS.md`                                                       | Tabela “Mapa do repositório” do `AGENTS.md`                      | Tabela “Procedimentos” do `AGENTS.md`                                                                                                                                     |
+| **Gemini CLI**                              | `GEMINI.md` (importa `AGENTS.md`)                                 | Igual ao Codex                                                   | Igual ao Codex                                                                                                                                                            |
+| **GitHub Copilot** (chat, revisão e agente) | `.github/copilot-instructions.md`; o agente também lê `AGENTS.md` | `.github/instructions/*.instructions.md` (`applyTo`)             | Igual ao Codex                                                                                                                                                            |
+| **Cursor**                                  | `AGENTS.md`                                                       | `.cursor/rules/*.mdc` (`globs`)                                  | Igual ao Codex                                                                                                                                                            |
+| Outras (Aider, Windsurf, Zed…)              | Configure a ferramenta para ler `AGENTS.md`                       | —                                                                | —                                                                                                                                                                         |
 
 ## Configuração do Claude Code (`.claude/`)
 
-| Arquivo | Função |
-| --- | --- |
-| `settings.json` | Permissões compartilhadas: libera os comandos de verificação; pede confirmação para `git commit`, `git push`, `pnpm add` e deploy; bloqueia `.env` e `push --force`; liga os hooks |
-| `hooks/format-file.sh` | PostToolUse: Prettier no arquivo editado (a partir da Etapa 0) |
-| `hooks/track-edit.sh` | PostToolUse: registra os arquivos editados na sessão em `.claude/.state/` |
-| `hooks/verify-on-stop.sh` | Stop: roda `scripts/verify.sh --files` nos arquivos editados; em falha, devolve ao agente uma única vez |
-| `rules/` | Lembretes por caminho que remetem aos guias |
-| `skills/` | Atalhos para os procedimentos |
-| `agents/content-reviewer.md` | Subagente que confere textos contra as regras editoriais, sem editar |
-| `agents/delivery-reviewer.md` | Subagente que avalia acessibilidade, desempenho e arquitetura de uma mudança, sem editar |
+| Arquivo                       | Função                                                                                                                                                                             |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `settings.json`               | Permissões compartilhadas: libera os comandos de verificação; pede confirmação para `git commit`, `git push`, `pnpm add` e deploy; bloqueia `.env` e `push --force`; liga os hooks |
+| `hooks/format-file.sh`        | PostToolUse: Prettier no arquivo editado (a partir da Etapa 0)                                                                                                                     |
+| `hooks/track-edit.sh`         | PostToolUse: registra os arquivos editados na sessão em `.claude/.state/`                                                                                                          |
+| `hooks/verify-on-stop.sh`     | Stop: roda `scripts/verify.sh --files` nos arquivos editados; em falha, devolve ao agente uma única vez                                                                            |
+| `rules/`                      | Lembretes por caminho que remetem aos guias                                                                                                                                        |
+| `skills/`                     | Atalhos para os procedimentos                                                                                                                                                      |
+| `agents/content-reviewer.md`  | Subagente que confere textos contra as regras editoriais, sem editar                                                                                                               |
+| `agents/delivery-reviewer.md` | Subagente que avalia acessibilidade, desempenho e arquitetura de uma mudança, sem editar                                                                                           |
 
 Preferências pessoais ficam em `.claude/settings.local.json` e `CLAUDE.local.md`, ambos fora do Git.
 
@@ -61,10 +61,11 @@ Preferências pessoais ficam em `.claude/settings.local.json` e `CLAUDE.local.md
 
 ## Verificação do próprio harness
 
-| Peça | Função |
-| --- | --- |
-| `scripts/verify.sh` | Ponto único de verificação para agentes, hook Stop e CI; relata cada etapa como `ok`, `FALHOU` ou `pulado` |
-| `scripts/check-ai-docs.sh` | Arquivos obrigatórios, imports, tamanho do `AGENTS.md`, adaptadores por guia, frontmatter e referências |
-| `tests/harness/` | Testes de scripts e hooks em fixtures isoladas, inclusive do próprio runner |
-| `.shellcheckrc`, `.editorconfig` | Padrão de shell e de formatação |
-| `.github/workflows/ci.yml` | Roda `scripts/verify.sh` em cada PR (com `shellcheck`) |
+| Peça                             | Função                                                                                                                                                                     |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `scripts/verify.sh`              | Ponto único de verificação para agentes, hook Stop e CI; relata cada etapa como `ok`, `FALHOU` ou `pulado`                                                                 |
+| `scripts/check-ai-docs.sh`       | Arquivos obrigatórios, imports, tamanho do `AGENTS.md`, adaptadores por guia, frontmatter e referências (inclusive README, relatórios de etapa, ADRs e registro de origem) |
+| `scripts/check-assets.sh`        | Registro de origem das referências, fotos e vídeo fora do Git, vídeo só em `public/video/` e marca de referência do boneco fora dos textos                                 |
+| `tests/harness/`                 | Testes de scripts e hooks em fixtures isoladas, inclusive do próprio runner                                                                                                |
+| `.shellcheckrc`, `.editorconfig` | Padrão de shell e de formatação                                                                                                                                            |
+| `.github/workflows/ci.yml`       | Roda `scripts/verify.sh` em cada PR (com `shellcheck`)                                                                                                                     |

@@ -4,7 +4,7 @@
 #
 # Uso: scripts/verify.sh [--full] [--root DIR] [--files ARQUIVO...]
 #   (padrão)  harness + aplicação: check, lint, test e build
-#   --full    inclui também pnpm test:e2e
+#   --full    inclui pnpm test:e2e e test:performance
 #   --files   modo rápido: verifica apenas o que os arquivos informados afetam
 #             (usado pelo hook Stop do Claude Code)
 #
@@ -14,6 +14,7 @@ set -uo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 full=0
 files_mode=0
+app_config_changed=0
 files=()
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -43,31 +44,44 @@ step() {
     printf 'FALHOU  %s\n' "$name"
     tail -n 30 "$log" | sed 's/^/        /'
     failed=1
+    return 1
   fi
 }
 
-want_docs=1 want_shell=1 want_harness_tests=1 want_app=1
+want_docs=1 want_shell=1 want_harness_tests=1 want_app=1 want_assets=1
 changed_sh=()
 changed_app=()
 if [ "$files_mode" -eq 1 ]; then
-  want_docs=0 want_shell=0 want_harness_tests=0 want_app=0
+  want_docs=0 want_shell=0 want_harness_tests=0 want_app=0 want_assets=0
   for f in "${files[@]}"; do
     [ -e "$f" ] || continue
     case "$f" in
-      AGENTS.md|CLAUDE.md|GEMINI.md|PLANO-IMPLEMENTACAO.md|docs/ai/*|.claude/*|.cursor/*|.github/*) want_docs=1 ;;
+      AGENTS.md|CLAUDE.md|GEMINI.md|README.md|docs/*|.claude/*|.cursor/*|.github/*) want_docs=1 ;;
+    esac
+    case "$f" in
+      assets-src/*|public/*|src/*) want_assets=1 ;;
     esac
     case "$f" in
       *.sh) want_shell=1; changed_sh+=("$f") ;;
     esac
     case "$f" in
       scripts/*|.claude/hooks/*|tests/harness/*) want_harness_tests=1; want_docs=1 ;;
-      src/*|tests/unit/*|tests/e2e/*|*.config.*|astro.config.mjs) want_app=1; changed_app+=("$f") ;;
+      package.json|pnpm-lock.yaml|pnpm-workspace.yaml|tsconfig.json|.nvmrc) want_app=1; app_config_changed=1 ;;
+      src/*|tests/unit/*|tests/e2e/*|*.config.*) want_app=1; changed_app+=("$f") ;;
     esac
   done
 fi
 
 if [ "$want_docs" -eq 1 ]; then
   step "documentação para IA" scripts/check-ai-docs.sh --root "$root"
+fi
+
+if [ "$want_assets" -eq 1 ]; then
+  if [ -x scripts/check-assets.sh ]; then
+    step "assets e referências" scripts/check-assets.sh --root "$root"
+  else
+    skip "assets e referências" "scripts/check-assets.sh ausente"
+  fi
 fi
 
 if [ "$want_shell" -eq 1 ]; then
@@ -96,19 +110,44 @@ if [ "$want_harness_tests" -eq 1 ]; then
   fi
 fi
 
+# O Astro recusa Node fora do intervalo do package.json com um erro que parece falha do projeto.
+check_node() {
+  local want have
+  want=$(tr -d '[:space:]v' < .nvmrc)
+  have=$(node --version 2>/dev/null) || { echo "node não encontrado no PATH"; return 1; }
+  have=${have#v}
+  if [ "${have%%.*}" != "${want%%.*}" ] ||
+     [ "$(printf '%s\n%s\n' "$want" "$have" | sort -V | head -n 1)" != "$want" ]; then
+    echo "Node v$have ativo; o projeto pede $want (.nvmrc). Rode: nvm use"
+    return 1
+  fi
+  echo "Node v$have"
+}
+
 has_script() { jq -e --arg s "$1" '.scripts[$s] // empty' package.json >/dev/null 2>&1; }
 pnpm_step() {
   local script=$1
   if has_script "$script"; then step "pnpm $script" pnpm "$script"; else skip "pnpm $script" "script ausente no package.json"; fi
 }
 
+node_ok=1
+if [ "$want_app" -eq 1 ] && [ -f package.json ]; then
+  if [ -f .nvmrc ]; then
+    step "versão do Node" check_node || node_ok=0
+  else
+    skip "versão do Node" ".nvmrc ausente"
+  fi
+fi
+
 if [ "$want_app" -eq 1 ]; then
   if [ ! -f package.json ]; then
     skip "aplicação" "package.json ausente; disponível a partir da Etapa 0"
+  elif [ "$node_ok" -eq 0 ]; then
+    skip "aplicação" "Node incompatível com .nvmrc"
   elif ! command -v pnpm >/dev/null 2>&1; then
     printf 'FALHOU  aplicação\n        pnpm não encontrado no PATH\n'
     failed=1
-  elif [ "$files_mode" -eq 1 ]; then
+  elif [ "$files_mode" -eq 1 ] && [ "$app_config_changed" -eq 0 ]; then
     lintable=()
     for f in "${changed_app[@]}"; do
       case "$f" in *.ts|*.mts|*.js|*.mjs|*.astro) lintable+=("$f") ;; esac
@@ -123,8 +162,19 @@ if [ "$want_app" -eq 1 ]; then
     pnpm_step check
     pnpm_step lint
     pnpm_step test
-    pnpm_step build
-    if [ "$full" -eq 1 ]; then pnpm_step test:e2e; else skip "pnpm test:e2e" "use --full"; fi
+    build_ok=1
+    pnpm_step build || build_ok=0
+    if [ "$full" -eq 1 ] && [ "$build_ok" -eq 0 ]; then
+      # Lighthouse lê dist/ direto: sem build novo ele mediria a versão anterior e passaria.
+      skip "pnpm test:e2e" "build falhou nesta execução"
+      skip "pnpm test:performance" "build falhou nesta execução"
+    elif [ "$full" -eq 1 ]; then
+      pnpm_step test:e2e
+      pnpm_step test:performance
+    else
+      skip "pnpm test:e2e" "use --full"
+      skip "pnpm test:performance" "use --full"
+    fi
   fi
 fi
 

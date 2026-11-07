@@ -33,7 +33,7 @@ require_fields() {
   for field in "$@"; do has_field "$file" "$field" || fail "$file sem '$field' no frontmatter"; done
 }
 
-for f in AGENTS.md CLAUDE.md GEMINI.md PLANO-IMPLEMENTACAO.md docs/ai/README.md \
+for f in AGENTS.md CLAUDE.md GEMINI.md docs/PLANO-IMPLEMENTACAO.md docs/ai/README.md \
          .github/copilot-instructions.md .claude/settings.json; do
   [ -f "$f" ] || fail "arquivo obrigatório ausente: $f"
 done
@@ -79,22 +79,39 @@ for f in .cursor/rules/*.mdc;              do [ -e "$f" ] && require_fields "$f"
 for f in .github/instructions/*.instructions.md; do [ -e "$f" ] && require_fields "$f" applyTo; done
 ok "frontmatter dos adaptadores"
 
+check_refs() {
+  local pattern=$1 ref
+  shift
+  [ "$#" -gt 0 ] || return 0
+  while IFS= read -r ref; do
+    ref="${ref#[\`@]}"
+    ref="${ref#./}"
+    ref="${ref%.}"
+    case "$ref" in
+      *'*'*|*'<'*|*NNNN*) continue ;;                          # modelos e globs
+      .github/workflows/*|.claude/settings.local.json|.claude/.state*) continue ;; # Etapa 0, pessoal ou gerado
+    esac
+    [ -e "$ref" ] || fail "referência quebrada: $ref"
+  done < <(grep -ohE "$pattern" "$@" | sort -u)
+}
+
 scan=()
 for f in AGENTS.md CLAUDE.md GEMINI.md .github/copilot-instructions.md; do [ -f "$f" ] && scan+=("$f"); done
 while IFS= read -r f; do scan+=("$f"); done < <(
   find docs/ai .claude .cursor .github/instructions -type f \( -name '*.md' -o -name '*.mdc' \) 2>/dev/null | sort
 )
-pattern='(`|@)(\./)?(AGENTS|CLAUDE|GEMINI|PLANO-IMPLEMENTACAO)\.md|(`|@)(\./)?(docs/ai|\.claude|\.cursor|\.github|scripts|tests/harness)/[A-Za-z0-9._/*<>-]+'
-while IFS= read -r ref; do
-  ref="${ref#[\`@]}"
-  ref="${ref#./}"
-  ref="${ref%.}"
-  case "$ref" in
-    *'*'*|*'<'*|*NNNN*) continue ;;                          # modelos e globs
-    .github/workflows/*|.claude/settings.local.json|.claude/.state*) continue ;; # Etapa 0, pessoal ou gerado
-  esac
-  [ -e "$ref" ] || fail "referência quebrada: $ref"
-done < <(grep -ohE "$pattern" "${scan[@]}" | sort -u)
+# Motivo: crases e $ são referências literais da documentação, não expansões de shell.
+# shellcheck disable=SC2016
+check_refs '(`|@)(\./)?(AGENTS|CLAUDE|GEMINI|PLANO-IMPLEMENTACAO)\.md|(`|@)(\./)?(docs|\.claude|\.cursor|\.github|scripts|tests/harness)/[A-Za-z0-9._/*<>-]+' "${scan[@]}"
+
+# Relatórios de etapa, ADRs, README e registro de origem citam só este repositório; os rascunhos
+# de docs/conteudo/ citam caminhos de outros projetos e destinos futuros, por isso ficam fora.
+project_docs=()
+for f in README.md docs/etapa-*.md docs/decisoes/*.md assets-src/referencias/ORIGEM.md; do
+  [ -f "$f" ] && project_docs+=("$f")
+done
+# shellcheck disable=SC2016
+check_refs '`(\./)?(src|public|assets-src|docs|scripts|tests|\.claude|\.cursor|\.github)/[A-Za-z0-9._/*<>-]+' "${project_docs[@]}"
 ok "referências a arquivos"
 
 if [ -f .claude/settings.json ] && command -v jq >/dev/null 2>&1; then

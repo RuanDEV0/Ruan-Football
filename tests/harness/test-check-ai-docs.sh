@@ -125,3 +125,34 @@ test_ok_lines_do_not_follow_errors() {
   run checker
   assert_not_contains "ok    guias com adaptadores"
 }
+
+test_fails_when_approved_plan_is_missing_from_docs() {
+  setup
+  rm -f "$TMP/repo/docs/PLANO-IMPLEMENTACAO.md"
+  run checker
+  assert_code 1
+  assert_contains "docs/PLANO-IMPLEMENTACAO.md"
+}
+
+test_fails_on_broken_reference_in_stage_report() {
+  setup
+  echo 'Arquivo: `src/data/nao-existe.ts`.' >> "$TMP/repo/docs/etapa-0-verificacao.md"
+  run checker
+  assert_code 1
+  assert_contains "referência quebrada: src/data/nao-existe.ts"
+}
+
+test_fails_on_broken_reference_in_readme() {
+  setup
+  echo 'Veja `assets-src/referencias/nao-existe.html`.' >> "$TMP/repo/README.md"
+  run checker
+  assert_code 1
+  assert_contains "referência quebrada: assets-src/referencias/nao-existe.html"
+}
+
+test_content_drafts_may_cite_other_repositories() {
+  setup
+  echo 'No outro projeto: `src/main/java/App.java`.' >> "$TMP/repo/docs/conteudo/evidencias-locais.md"
+  run checker
+  assert_code 0
+}

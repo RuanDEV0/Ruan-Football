@@ -11,7 +11,7 @@ Antes de revisar, leia:
 1. `AGENTS.md`: regras invioláveis e definição de pronto.
 2. `docs/ai/procedures/verify-delivery.md`, que é o roteiro a seguir.
 3. O guia em `docs/ai/guides/` de cada área tocada pela mudança.
-4. `PLANO-IMPLEMENTACAO.md`, seção 3.11 (orçamentos) e a Validação da etapa em questão.
+4. `docs/PLANO-IMPLEMENTACAO.md`, seção 3.11 (orçamentos) e a Validação da etapa em questão.
 
 Verifique em especial:
 

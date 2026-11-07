@@ -5,7 +5,7 @@
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 export REPO_ROOT
 
-HARNESS_PATHS=(AGENTS.md CLAUDE.md GEMINI.md PLANO-IMPLEMENTACAO.md docs .claude .cursor .github scripts tests)
+HARNESS_PATHS=(.shellcheckrc AGENTS.md CLAUDE.md GEMINI.md README.md docs .claude .cursor .github scripts tests src public assets-src)
 
 make_fixture() {
   local dst=$1 path

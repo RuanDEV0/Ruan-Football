@@ -1,0 +1,18 @@
+---
+import { navigation } from '@/data/navigation';
+---
+
+<nav aria-label="Principal">
+  <ul>
+    {navigation.map(({ label, route }) => (
+      <li>
+        <a
+          href={route}
+          aria-current={Astro.url.pathname.replace(/\/$/, '') === route ? 'page' : undefined}
+        >
+          {label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</nav>

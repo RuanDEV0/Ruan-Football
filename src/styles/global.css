@@ -1,0 +1,130 @@
+@import './tokens.css';
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  line-height: var(--line-height);
+}
+a {
+  color: inherit;
+  text-underline-offset: var(--space-1);
+}
+a:hover {
+  color: var(--color-accent);
+}
+:focus-visible {
+  outline: var(--border) solid var(--color-focus);
+  outline-offset: var(--space-1);
+}
+header,
+main,
+footer {
+  width: min(var(--size-content), 100%);
+  margin-inline: auto;
+  padding: var(--space-3);
+}
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-bottom: var(--border) solid var(--color-line);
+}
+nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-3);
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+nav a {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-touch);
+  font-size: var(--text-small);
+}
+main {
+  padding-block: var(--space-6);
+  min-height: 65vh;
+}
+h1 {
+  font-size: var(--text-heading);
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  max-width: var(--size-reading);
+  margin-block: var(--space-2) var(--space-4);
+  overflow-wrap: anywhere;
+}
+p {
+  max-width: var(--size-reading);
+}
+.eyebrow {
+  color: var(--color-accent);
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+}
+.muted,
+footer {
+  color: var(--color-muted);
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-block: var(--space-4);
+}
+button,
+.button {
+  font: inherit;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--size-touch);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border) solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-text);
+  text-decoration: none;
+  cursor: pointer;
+}
+button:hover,
+.button:hover {
+  border-color: var(--color-accent);
+}
+button[aria-pressed='true'] {
+  border-color: var(--color-focus);
+}
+button:disabled {
+  cursor: progress;
+}
+.scene {
+  height: var(--size-scene);
+  border: var(--border) solid var(--color-line);
+  background: var(--color-surface);
+  overflow: hidden;
+}
+.scene canvas {
+  display: block;
+  max-width: 100%;
+}
+.skip-link {
+  position: absolute;
+  transform: translateY(-200%);
+  padding: var(--space-2);
+  background: var(--color-background);
+  z-index: 1;
+}
+.skip-link:focus {
+  transform: translateY(0);
+}
+footer {
+  border-top: var(--border) solid var(--color-line);
+  font-size: var(--text-small);
+}

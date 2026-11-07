@@ -1,0 +1,27 @@
+:root {
+  --color-background: #101513;
+  --color-surface: #1b241f;
+  --color-text: #f2f2e9;
+  --color-muted: #bcc8bf;
+  --color-accent: #ef7066;
+  --color-line: #425248;
+  --color-focus: #f4ce78;
+  --font-body: system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --text-small: 0.875rem;
+  --text-body: 1rem;
+  --text-heading: clamp(2.5rem, 8vw, 6rem);
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.5rem;
+  --space-4: 2rem;
+  --space-5: 3rem;
+  --space-6: 5rem;
+  --size-content: 74rem;
+  --size-reading: 42rem;
+  --size-touch: 2.75rem;
+  --size-scene: 20rem;
+  --line-height: 1.6;
+  --radius: 0.25rem;
+  --border: 1px;
+}

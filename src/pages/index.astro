@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/data/profile';
+---
+
+<BaseLayout title="Início" description={profile.title}>
+  <p class="eyebrow">{profile.location} / Portfólio em construção</p>
+  <h1>{profile.name}</h1>
+  <p>{profile.title}.</p>
+  <p class="muted">Explore o conteúdo pelo menu. O campo interativo está em construção.</p>
+  <div class="actions">
+    <a class="button" href="/projetos">
+      Ver projetos
+    </a>
+    <button type="button" data-enter>
+      Entrar no campo
+    </button>
+    <button type="button" data-light aria-pressed="false">
+      Usar modo leve
+    </button>
+  </div>
+  <p role="status" data-status>
+    O conteúdo está disponível pelo menu, sem precisar da cena.
+  </p>
+  <div class="scene" data-scene role="region" aria-label="Área da cena de teste"></div>
+  <noscript>
+    <p>A cena opcional precisa de JavaScript. Todas as páginas continuam disponíveis pelo menu.</p>
+  </noscript>
+</BaseLayout>
+<script>
+  import '@/ui/experience';
+</script>

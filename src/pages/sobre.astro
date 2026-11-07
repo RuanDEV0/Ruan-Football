@@ -1,0 +1,14 @@
+---
+import { profile } from '@/data/profile';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="Sobre o Ruan" description={profile.title}>
+  <h1>Sobre o Ruan</h1>
+  <p>{profile.fullName}</p>
+  <p>{profile.bio}</p>
+  <section id="penalti">
+    <h2>O pênalti</h2>
+    <p>O vídeo será incluído em uma próxima etapa.</p>
+  </section>
+</BaseLayout>

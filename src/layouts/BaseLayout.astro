@@ -1,0 +1,43 @@
+---
+import Menu from '@/components/Menu.astro';
+import { profile } from '@/data/profile';
+import '@/styles/global.css';
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+---
+
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} | {profile.name}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex, nofollow" />
+    {canonical && <link rel="canonical" href={canonical} />}
+  </head>
+  <body>
+    <a class="skip-link" href="#conteudo">
+      Pular para o conteúdo
+    </a>
+    <header>
+      <a href="/" aria-label={`${profile.name} — início`}>
+        {profile.name}
+      </a>
+      <Menu />
+    </header>
+    <main id="conteudo" tabindex="-1">
+      <slot />
+    </main>
+    <footer>
+      <p>
+        {profile.name} · {profile.location}
+      </p>
+      <p>Portfólio em construção.</p>
+    </footer>
+  </body>
+</html>

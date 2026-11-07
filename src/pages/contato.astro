@@ -1,0 +1,26 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/data/profile';
+---
+
+<BaseLayout title="Contato" description={`Entre em contato com ${profile.name}.`}>
+  <h1>Contato</h1>
+  <p>Vamos conversar sobre desenvolvimento de software e oportunidades de trabalho.</p>
+  <ul>
+    <li>
+      <a class="button" href={`mailto:${profile.email}`}>
+        E-mail
+      </a>
+    </li>
+    <li>
+      <a class="button" href={profile.linkedin}>
+        LinkedIn
+      </a>
+    </li>
+    <li>
+      <a class="button" href={profile.github}>
+        GitHub
+      </a>
+    </li>
+  </ul>
+</BaseLayout>

@@ -1,0 +1,20 @@
+---
+import { getCollection } from 'astro:content';
+import { isPublishable } from '@/lib/publication';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+const projects = await getCollection('projetos', isPublishable);
+---
+
+<BaseLayout title="Projetos" description="Projetos e estudos de caso de Ruan Oliveira.">
+  <p class="eyebrow">Portfólio</p>
+  <h1>Projetos</h1>
+  {projects.length ? (
+    <ul>
+      {projects.map((project) => (
+        <li>{project.data.title}</li>
+      ))}
+    </ul>
+  ) : (
+    <p>Os estudos de caso estão em preparação.</p>
+  )}
+</BaseLayout>

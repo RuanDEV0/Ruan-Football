@@ -1,0 +1,9 @@
+---
+description: Conteúdo profissional — leia docs/ai/guides/content.md
+globs: src/content/**,src/data/**,src/content.config.ts
+alwaysApply: false
+---
+
+# Conteúdo profissional
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/content.md. As regras gerais estão em @AGENTS.md.

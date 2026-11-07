@@ -1,0 +1,9 @@
+---
+description: Qualidade, testes e CI — leia docs/ai/guides/quality.md
+globs: tests/**,.github/workflows/**,playwright.config.ts,vitest.config.ts,eslint.config.js,astro.config.mjs
+alwaysApply: false
+---
+
+# Qualidade, testes e CI
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/quality.md. As regras gerais estão em @AGENTS.md.

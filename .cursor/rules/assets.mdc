@@ -1,0 +1,9 @@
+---
+description: Assets — leia docs/ai/guides/assets.md
+globs: assets-src/**,public/models/**,public/video/**,public/decoders/**,public/cv/**,src/assets/**
+alwaysApply: false
+---
+
+# Assets
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/assets.md. As regras gerais estão em @AGENTS.md.

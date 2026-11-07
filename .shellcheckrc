@@ -1,0 +1,4 @@
+# Configuração do shellcheck para scripts do harness (scripts/, .claude/hooks/, tests/harness/)
+external-sources=true
+source-path=SCRIPTDIR
+shell=bash

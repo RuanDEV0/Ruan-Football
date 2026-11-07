@@ -1,0 +1,30 @@
+# Verificação de cada pull request. A Etapa 0 acrescenta Node, pnpm e os passos da aplicação;
+# até lá, scripts/verify.sh verifica o harness e relata a aplicação como "pulado".
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Ferramentas do harness
+        run: |
+          shellcheck --version
+          jq --version
+
+      - name: Verificação completa
+        run: scripts/verify.sh

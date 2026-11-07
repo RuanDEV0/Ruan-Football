@@ -1,0 +1,9 @@
+---
+description: Padrão do código gerado — leia docs/ai/guides/code-standards.md
+globs: src/**,scripts/**,tests/**,.claude/hooks/**
+alwaysApply: false
+---
+
+# Padrão do código gerado
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/code-standards.md e o roteiro @docs/ai/procedures/implement-change.md. As regras gerais estão em @AGENTS.md.

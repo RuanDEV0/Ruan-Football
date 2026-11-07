@@ -1,0 +1,11 @@
+# Configuração pessoal dos agentes de IA (não compartilhada)
+.claude/settings.local.json
+CLAUDE.local.md
+.claude/.state/
+
+# Segredos
+.env
+.env.local
+.env.production
+
+# Ampliado na Etapa 0 (node_modules/, dist/, .astro/, temporários do Blender, vídeo original)

@@ -1,0 +1,9 @@
+---
+description: Interface e acessibilidade — leia docs/ai/guides/ui-accessibility.md
+globs: src/pages/**,src/layouts/**,src/components/**,src/ui/**,src/styles/**
+alwaysApply: false
+---
+
+# Interface e acessibilidade
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/ui-accessibility.md. As regras gerais estão em @AGENTS.md.

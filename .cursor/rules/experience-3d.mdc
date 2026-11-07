@@ -1,0 +1,9 @@
+---
+description: Cena 3D — leia docs/ai/guides/experience-3d.md
+globs: src/experience/**
+alwaysApply: false
+---
+
+# Cena 3D
+
+Antes de editar arquivos desta área, leia e siga @docs/ai/guides/experience-3d.md. As regras gerais estão em @AGENTS.md.

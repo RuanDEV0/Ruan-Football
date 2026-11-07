@@ -6,7 +6,7 @@ Regras canônicas para qualquer agente de IA neste repositório (Claude Code, Co
 
 Portfólio de Ruan Oliveira (desenvolvimento backend, APIs e aplicações web, Boa Vista–RR), com um campo society 3D explorável sobre um site estático completo. O conteúdo profissional é HTML acessível; o 3D é uma camada opcional.
 
-- **Fonte da verdade:** `PLANO-IMPLEMENTACAO.md` (aprovado em 06/11/2026). Leia a seção relevante antes de agir.
+- **Fonte da verdade:** `docs/PLANO-IMPLEMENTACAO.md` (aprovado em 06/11/2026). Leia a seção relevante antes de agir.
   - Produto e experiência: seções 1, 2 e 5 a 7.
   - Arquitetura, stack, estrutura, configurações e orçamentos: seção 3.
   - Etapas e tarefas: seção 4. Decisões: seção 12. Riscos: seção 13.
@@ -14,7 +14,7 @@ Portfólio de Ruan Oliveira (desenvolvimento backend, APIs e aplicações web, B
 
 ## Estado atual
 
-**Planejamento concluído em 06/11/2026. Próximas: Etapa 0 (técnica) e Etapa 1 (conteúdo), em paralelo.** Ainda não há código da aplicação nem `package.json`. Existem o plano, a licença e este harness, com verificação própria (`scripts/verify.sh`, `tests/harness/`, CI). Não presuma que um arquivo ou comando `pnpm` citado abaixo já exista: verifique.
+**Etapa 0: concluída com a base local em 07/11/2026** (`docs/decisoes/0003-etapa-0-concluida-localmente.md`). Astro estático, páginas provisórias, schemas, cena de teste, testes e workflow de CI escritos; `scripts/verify.sh --full` passou localmente. Hospedagem, prévia por PR e execução remota da CI foram transferidas para antes da validação da Etapa 2 e dependem de autorização explícita para Git e hospedagem. **Etapa 1 em andamento:** a parte editorial foi iniciada com o material de Ruan: contatos e apresentação aplicados, roteiro e pendências em `docs/conteudo/etapa-1.md`; capturas de frontend serão fornecidas depois. Evidências de código e inspeção do vídeo recebidas em 07/11/2026: `docs/conteudo/evidencias-locais.md` e `docs/conteudo/video-penalti.md`; certificado AWS em rascunho na coleção. Aparência inicial do personagem definida com fotos de Ruan em 07/11/2026: `docs/conteudo/personagem.md` e folha `assets-src/referencias/folha-boneco.html`. Detalhes e pendências da Etapa 0 em `docs/etapa-0-verificacao.md`.
 
 Ao concluir uma etapa, atualize esta seção.
 
@@ -28,13 +28,14 @@ Disponíveis desde já:
 
 ```sh
 scripts/verify.sh            # verificação única: harness + aplicação (o que existir)
-scripts/verify.sh --full     # inclui e2e
+scripts/verify.sh --full     # inclui e2e e Lighthouse
 scripts/verify.sh --files A B   # só o que os arquivos afetam (usado pelo hook Stop)
 tests/harness/run.sh [filtro]   # testes dos scripts e hooks
 scripts/check-ai-docs.sh     # consistência desta documentação
+scripts/check-assets.sh      # origem das referências, originais fora do Git, marcas
 ```
 
-A partir da Etapa 0 (chamados por `scripts/verify.sh`):
+Disponíveis na base local (chamados por `scripts/verify.sh`):
 
 ```sh
 pnpm install          # instalar dependências
@@ -45,23 +46,23 @@ pnpm format           # Prettier
 pnpm test             # Vitest
 pnpm test:e2e         # Playwright + axe
 pnpm build            # build estático em dist/
-pnpm assets:models    # otimizar GLB exportados do Blender
-pnpm assets:video     # gerar versões de reprodução do vídeo
 ```
+
+Os pipelines `pnpm assets:models` e `pnpm assets:video` ainda serão implementados com os materiais das respectivas etapas.
 
 ## Mapa do repositório
 
 Estrutura completa no plano, seção 3.7. Resumo:
 
-| Caminho | Conteúdo | Guia |
-| --- | --- | --- |
-| `src/experience/` | Cena 3D em TypeScript puro | `docs/ai/guides/experience-3d.md` |
-| `src/content/`, `src/data/` | Projetos, experiência, formação, perfil, hotspots | `docs/ai/guides/content.md` |
-| `src/pages/`, `src/components/`, `src/layouts/`, `src/ui/`, `src/styles/` | Páginas, interface e acessibilidade | `docs/ai/guides/ui-accessibility.md` |
-| `assets-src/`, `public/models/`, `public/video/` | Modelos, texturas e vídeo | `docs/ai/guides/assets.md` |
-| Todo código (`src/`, `scripts/`, `tests/`, `.claude/hooks/`) | Padrão do código gerado, comentários e testes | `docs/ai/guides/code-standards.md` |
-| `tests/`, `.github/workflows/`, `scripts/verify.sh` | Testes, verificação e CI | `docs/ai/guides/quality.md` |
-| `docs/decisoes/` | ADRs | `docs/ai/procedures/create-adr.md` |
+| Caminho                                                                   | Conteúdo                                          | Guia                                 |
+| ------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------ |
+| `src/experience/`                                                         | Cena 3D em TypeScript puro                        | `docs/ai/guides/experience-3d.md`    |
+| `src/content/`, `src/data/`                                               | Projetos, experiência, formação, perfil, hotspots | `docs/ai/guides/content.md`          |
+| `src/pages/`, `src/components/`, `src/layouts/`, `src/ui/`, `src/styles/` | Páginas, interface e acessibilidade               | `docs/ai/guides/ui-accessibility.md` |
+| `assets-src/`, `public/models/`, `public/video/`                          | Modelos, texturas e vídeo                         | `docs/ai/guides/assets.md`           |
+| Todo código (`src/`, `scripts/`, `tests/`, `.claude/hooks/`)              | Padrão do código gerado, comentários e testes     | `docs/ai/guides/code-standards.md`   |
+| `tests/`, `.github/workflows/`, `scripts/verify.sh`                       | Testes, verificação e CI                          | `docs/ai/guides/quality.md`          |
+| `docs/decisoes/`                                                          | ADRs                                              | `docs/ai/procedures/create-adr.md`   |
 
 **Leia o guia da área antes de editar arquivos dela.**
 
@@ -108,14 +109,14 @@ Relate falhas como falhas. Não declare algo verificado sem ter executado a veri
 
 Roteiros passo a passo, válidos para qualquer agente:
 
-| Quando | Procedimento |
-| --- | --- |
-| Implementar qualquer mudança de código (padrão) | `docs/ai/procedures/implement-change.md` |
-| Iniciar ou continuar uma etapa do plano | `docs/ai/procedures/start-stage.md` |
-| Adicionar ou atualizar um projeto ou estudo de caso | `docs/ai/procedures/add-project.md` |
-| Revisar textos profissionais antes de publicar | `docs/ai/procedures/review-content.md` |
-| Registrar uma decisão técnica | `docs/ai/procedures/create-adr.md` |
-| Verificar uma entrega antes da validação de Ruan | `docs/ai/procedures/verify-delivery.md` |
+| Quando                                              | Procedimento                             |
+| --------------------------------------------------- | ---------------------------------------- |
+| Implementar qualquer mudança de código (padrão)     | `docs/ai/procedures/implement-change.md` |
+| Iniciar ou continuar uma etapa do plano             | `docs/ai/procedures/start-stage.md`      |
+| Adicionar ou atualizar um projeto ou estudo de caso | `docs/ai/procedures/add-project.md`      |
+| Revisar textos profissionais antes de publicar      | `docs/ai/procedures/review-content.md`   |
+| Registrar uma decisão técnica                       | `docs/ai/procedures/create-adr.md`       |
+| Verificar uma entrega antes da validação de Ruan    | `docs/ai/procedures/verify-delivery.md`  |
 
 ## Manutenção desta documentação
 

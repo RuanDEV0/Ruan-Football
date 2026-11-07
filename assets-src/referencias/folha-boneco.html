@@ -1,0 +1,1096 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Folha do Boneco Ruan</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&display=swap"
+    />
+    <style>
+      /* Layout: prancha de projeto de brinquedo — papel milimetrado, vistas ortográficas alinhadas por linhas de proporção, fichas técnicas abaixo. */
+      :root {
+        --paper: #f2f4ef;
+        --panel: #fafbf8;
+        --ink: #1d2420;
+        --muted: #56645c;
+        --grid: #e1e7e0;
+        --line: #b6c2b9;
+        --accent: #b83a26;
+        --chip-photo: #dbe9df;
+        --chip-video: #e3e3f3;
+        --chip-proposal: #f6e1d9;
+        --chip-inferred: #ece6d4;
+
+        /* Cores do personagem: iguais nos dois temas, pois descrevem o objeto. */
+        --skin: #b78d74;
+        --skin-shade: #9a705c;
+        --buzz: #7d5e4e;
+        --beard: #1c1a1c;
+        --eye: #3a2418;
+        --lips: #b9776e;
+        --bib: #9be22d;
+        --tee: #24272b;
+        --shorts: #1b1d20;
+        --sock: #1b1d20;
+        --stripe: #c8102e;
+        --shoe: #141517;
+        --gold: #d4a93a;
+        --cap: #6e6257;
+        --strap: #2e2a27;
+        --outline: #151715;
+        --pitch: #2f6b45;
+        --post: #f4f4ef;
+        --net: #8fb79c;
+
+        --font-display: 'Bricolage Grotesque', 'Avenir Next', 'Segoe UI', sans-serif;
+        --font-body: 'Atkinson Hyperlegible', 'Segoe UI', system-ui, sans-serif;
+        --font-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root:not([data-theme='light']) {
+          --paper: #121815;
+          --panel: #18201c;
+          --ink: #e8eee8;
+          --muted: #9eaba3;
+          --grid: #1c2521;
+          --line: #34413a;
+          --accent: #f0765f;
+          --chip-photo: #23392c;
+          --chip-video: #2a2a42;
+          --chip-proposal: #432a22;
+          --chip-inferred: #3a3424;
+          color-scheme: dark;
+        }
+      }
+      :root[data-theme='dark'] {
+        --paper: #121815;
+        --panel: #18201c;
+        --ink: #e8eee8;
+        --muted: #9eaba3;
+        --grid: #1c2521;
+        --line: #34413a;
+        --accent: #f0765f;
+        --chip-photo: #23392c;
+        --chip-video: #2a2a42;
+        --chip-proposal: #432a22;
+        --chip-inferred: #3a3424;
+        color-scheme: dark;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        background-color: var(--paper);
+        background-image:
+          linear-gradient(var(--grid) 1px, transparent 1px),
+          linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+        background-size: 24px 24px;
+        color: var(--ink);
+        font-family: var(--font-body);
+        font-size: 1rem;
+        line-height: 1.55;
+      }
+      .wrap {
+        max-width: 78rem;
+        margin: 0 auto;
+        padding-block: 2.5rem 4rem;
+        padding-left: max(16px, env(safe-area-inset-left, 0px));
+        padding-right: max(16px, env(safe-area-inset-right, 0px));
+        display: grid;
+        gap: 2rem;
+      }
+
+      header {
+        display: grid;
+        gap: 0.75rem;
+      }
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      h1 {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: clamp(2.2rem, 6vw, 3.8rem);
+        line-height: 1.02;
+        margin: 0;
+        text-wrap: balance;
+      }
+      .lede {
+        margin: 0;
+        max-width: 64ch;
+        color: var(--muted);
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+
+      .chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.35rem;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        letter-spacing: 0.03em;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        white-space: nowrap;
+        color: var(--ink);
+      }
+      .chip.photo {
+        background: var(--chip-photo);
+      }
+      .chip.video {
+        background: var(--chip-video);
+      }
+      .chip.proposal {
+        background: var(--chip-proposal);
+      }
+      .chip.inferred {
+        background: var(--chip-inferred);
+      }
+
+      .sheet {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1rem;
+        overflow-x: auto;
+      }
+      .sheet svg {
+        display: block;
+        width: 100%;
+        min-width: 860px;
+        height: auto;
+      }
+
+      h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 1.35rem;
+        margin: 0;
+        text-wrap: balance;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+        gap: 1.25rem;
+        align-items: start;
+      }
+      .card {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 6px;
+        padding: 1.25rem;
+        display: grid;
+        gap: 0.9rem;
+        align-content: start;
+        min-width: 0;
+      }
+      .card p {
+        margin: 0;
+      }
+      .card .note {
+        color: var(--muted);
+        font-size: 0.9rem;
+      }
+
+      .heads {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.75rem;
+      }
+      .heads figure {
+        margin: 0;
+        display: grid;
+        gap: 0.4rem;
+        justify-items: center;
+        align-content: start;
+        text-align: center;
+      }
+      .heads svg {
+        width: 100%;
+        max-width: 9rem;
+        height: auto;
+      }
+      .heads figcaption {
+        font-size: 0.82rem;
+        color: var(--muted);
+      }
+      .heads figcaption strong {
+        color: var(--ink);
+        display: block;
+      }
+
+      .joints {
+        display: grid;
+        grid-template-columns: minmax(0, 8rem) minmax(0, 1fr);
+        gap: 1rem;
+        align-items: start;
+      }
+      .joints svg {
+        width: 100%;
+        max-width: 10rem;
+        height: auto;
+        justify-self: center;
+      }
+      pre.tree {
+        margin: 0;
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        line-height: 1.6;
+        overflow-x: auto;
+        color: var(--ink);
+      }
+      pre.tree .n {
+        color: var(--accent);
+        font-weight: 600;
+      }
+      pre.tree .c {
+        color: var(--muted);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      .table-wrap {
+        overflow-x: auto;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.45rem 0.4rem;
+        border-bottom: 1px solid var(--line);
+        vertical-align: middle;
+      }
+      th {
+        font-family: var(--font-mono);
+        font-weight: 600;
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      td.hex {
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-variant-numeric: tabular-nums;
+        white-space: nowrap;
+      }
+      .sw {
+        display: inline-block;
+        width: 1.1rem;
+        height: 1.1rem;
+        border-radius: 3px;
+        border: 1px solid var(--line);
+        vertical-align: -0.2rem;
+        margin-right: 0.45rem;
+      }
+
+      ul.list {
+        margin: 0;
+        padding-left: 1.1rem;
+        display: grid;
+        gap: 0.35rem;
+      }
+      ul.list li::marker {
+        color: var(--accent);
+      }
+
+      .penalty svg {
+        width: 100%;
+        height: auto;
+      }
+
+      svg text {
+        font-family: var(--font-mono);
+      }
+      .fig path,
+      .fig rect,
+      .fig ellipse,
+      .fig circle {
+        stroke: var(--outline);
+        stroke-width: 1.6;
+        stroke-linejoin: round;
+      }
+      .fig .ns {
+        stroke: none;
+      }
+      .guide {
+        stroke: var(--line);
+        stroke-width: 1;
+        stroke-dasharray: 4 4;
+      }
+      .guide-label {
+        fill: var(--muted);
+        font-size: 11px;
+      }
+      .view-label {
+        fill: var(--ink);
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+      }
+      .view-sub {
+        fill: var(--muted);
+        font-size: 11px;
+      }
+      .ruler {
+        stroke: var(--accent);
+        stroke-width: 1.5;
+      }
+      .ruler-label {
+        fill: var(--accent);
+        font-size: 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <span class="eyebrow">Portfólio Ruan Oliveira · Etapa 1, aparência inicial · base da Etapa 4 · rascunho para aprovação</span>
+        <h1>Folha do Boneco Ruan</h1>
+        <p class="lede">
+          Boneco articulado próprio, em peças rígidas, vestido como no pênalti: colete verde-limão
+          sobre camiseta preta. A frente vem das fotos frontais e o perfil foi medido na foto de
+          lado. O lado esquerdo é o direito espelhado, e as costas foram deduzidas das fotos e do
+          vídeo.
+        </p>
+        <div class="meta">
+          <span class="chip photo">fotos de Ruan</span>
+          <span class="chip video">vídeo do pênalti</span>
+          <span class="chip inferred">inferido</span>
+          <span class="chip proposal">proposta</span>
+        </div>
+      </header>
+
+      <section
+        class="sheet"
+        aria-label="Vistas ortográficas do boneco: frente, lado direito, lado esquerdo e costas"
+      >
+        <svg viewBox="0 0 1140 540" role="img" aria-labelledby="turn-title">
+          <title id="turn-title">
+            Boneco careca, de barba aparada com costeletas em degradê, colete verde-limão, camiseta
+            e short pretos, meião preto com faixa vermelha e chuteira preta, visto de frente, dos
+            dois lados e de costas.
+          </title>
+          <defs>
+            <linearGradient id="side-fade" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style="stop-color: var(--beard); stop-opacity: 0" />
+              <stop offset="0.6" style="stop-color: var(--beard); stop-opacity: 0.3" />
+              <stop offset="1" style="stop-color: var(--beard); stop-opacity: 0.8" />
+            </linearGradient>
+            <linearGradient id="fade-h" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0" style="stop-color: var(--beard); stop-opacity: 0" />
+              <stop offset="0.6" style="stop-color: var(--beard); stop-opacity: 1" />
+            </linearGradient>
+            <linearGradient id="buzz-v" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" style="stop-color: var(--buzz); stop-opacity: 0.4" />
+              <stop offset="1" style="stop-color: var(--buzz); stop-opacity: 0" />
+            </linearGradient>
+            <pattern id="mesh" width="5" height="5" patternUnits="userSpaceOnUse">
+              <circle cx="2.5" cy="2.5" r="0.8" fill="#000" opacity="0.18" />
+            </pattern>
+
+            <!-- Cabeça de frente: base careca. Alturas batem com o perfil medido. -->
+            <g id="head-front" class="fig">
+              <ellipse cx="69" cy="119" rx="8" ry="15" fill="var(--skin)" />
+              <ellipse cx="171" cy="119" rx="8" ry="15" fill="var(--skin)" />
+              <path
+                d="M120,58 C153,58 167,82 169,112 C172,148 156,174 120,174 C84,174 68,148 71,112 C73,82 87,58 120,58 Z"
+                fill="var(--skin)"
+              />
+              <path
+                class="ns"
+                d="M71,112 C73,80 90,58 120,58 C150,58 167,80 169,112 C158,96 142,88 120,88 C98,88 82,96 71,112 Z"
+                fill="url(#buzz-v)"
+              />
+              <path
+                d="M70,128 L80,128 C83,139 89,147 99,150 C104,146 110,143 120,143 C130,143 136,146 141,150 C151,147 157,139 160,128 L170,128 C171,142 169,156 164,166 C156,178 140,183 120,183 C100,183 84,178 76,166 C71,156 69,142 70,128 Z"
+                fill="var(--beard)"
+              />
+              <path
+                class="ns"
+                d="M74,106 C78,118 88,134 99,142 L99,150 C89,147 83,139 80,128 L80,134 L70,134 C70,124 70.5,114 71.5,106 Z"
+                fill="url(#side-fade)"
+              />
+              <path
+                class="ns"
+                d="M166,106 C162,118 152,134 141,142 L141,150 C151,147 157,139 160,128 L160,134 L170,134 C170,124 169.5,114 168.5,106 Z"
+                fill="url(#side-fade)"
+              />
+              <path d="M109,152 Q120,146 131,152 Q120,161 109,152 Z" fill="var(--lips)" />
+              <path
+                class="ns"
+                d="M112,152 Q120,150 128,152"
+                stroke="var(--eye)"
+                stroke-width="1.2"
+                fill="none"
+              />
+              <path
+                class="ns"
+                d="M114,134 Q120,141 126,134"
+                stroke="var(--skin-shade)"
+                stroke-width="3"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path
+                class="ns"
+                d="M89,104 Q101,94 114,99 L114,106 Q101,102 90,110 Z"
+                fill="var(--beard)"
+              />
+              <path
+                class="ns"
+                d="M151,104 Q139,94 126,99 L126,106 Q139,102 150,110 Z"
+                fill="var(--beard)"
+              />
+              <ellipse class="ns" cx="102" cy="116" rx="5" ry="6.5" fill="var(--eye)" />
+              <ellipse class="ns" cx="138" cy="116" rx="5" ry="6.5" fill="var(--eye)" />
+              <circle class="ns" cx="103.6" cy="113.6" r="1.6" fill="#fff" />
+              <circle class="ns" cx="139.6" cy="113.6" r="1.6" fill="#fff" />
+            </g>
+
+            <!-- Corpo de frente, sem a cabeça, para permitir trocar a cabeça. -->
+            <g id="body-front" class="fig">
+              <rect x="103" y="166" width="34" height="32" fill="var(--skin)" />
+              <rect x="56" y="204" width="24" height="58" rx="11" fill="var(--skin)" />
+              <rect x="57" y="262" width="22" height="46" rx="10" fill="var(--skin)" />
+              <circle cx="68" cy="262" r="9" fill="var(--skin-shade)" />
+              <rect x="54" y="198" width="28" height="36" rx="13" fill="var(--tee)" />
+              <ellipse cx="68" cy="318" rx="12" ry="13" fill="var(--skin)" />
+              <ellipse cx="78" cy="311" rx="4.5" ry="6" fill="var(--skin)" />
+              <rect x="160" y="204" width="24" height="58" rx="11" fill="var(--skin)" />
+              <rect x="161" y="262" width="22" height="46" rx="10" fill="var(--skin)" />
+              <circle cx="172" cy="262" r="9" fill="var(--skin-shade)" />
+              <rect x="158" y="198" width="28" height="36" rx="13" fill="var(--tee)" />
+              <ellipse cx="172" cy="318" rx="12" ry="13" fill="var(--skin)" />
+              <ellipse cx="162" cy="311" rx="4.5" ry="6" fill="var(--skin)" />
+              <rect x="86" y="356" width="30" height="50" rx="8" fill="var(--skin)" />
+              <rect x="88" y="404" width="26" height="54" rx="8" fill="var(--skin)" />
+              <circle cx="101" cy="404" r="10" fill="var(--skin-shade)" />
+              <rect x="87" y="414" width="28" height="44" rx="6" fill="var(--sock)" />
+              <rect class="ns" x="88" y="421" width="26" height="5" fill="var(--stripe)" />
+              <rect x="79" y="454" width="38" height="26" rx="9" fill="var(--shoe)" />
+              <rect x="124" y="356" width="30" height="50" rx="8" fill="var(--skin)" />
+              <rect x="126" y="404" width="26" height="54" rx="8" fill="var(--skin)" />
+              <circle cx="139" cy="404" r="10" fill="var(--skin-shade)" />
+              <rect x="125" y="414" width="28" height="44" rx="6" fill="var(--sock)" />
+              <rect class="ns" x="126" y="421" width="26" height="5" fill="var(--stripe)" />
+              <rect x="123" y="454" width="38" height="26" rx="9" fill="var(--shoe)" />
+              <path d="M80,310 H160 L164,368 H124 L120,352 L116,368 H76 Z" fill="var(--shorts)" />
+              <path
+                d="M82,204 C82,198 90,194 100,194 H140 C150,194 158,198 158,204 L162,306 C162,312 158,316 152,316 H88 C82,316 78,312 78,306 Z"
+                fill="var(--tee)"
+              />
+              <path
+                d="M90,196 H104 C108,211 132,211 136,196 H150 L156,302 C156,308 152,312 146,312 H94 C88,312 84,308 84,302 Z"
+                fill="var(--bib)"
+              />
+              <path
+                class="ns"
+                d="M90,196 H104 C108,211 132,211 136,196 H150 L156,302 C156,308 152,312 146,312 H94 C88,312 84,308 84,302 Z"
+                fill="url(#mesh)"
+              />
+              <path
+                class="ns"
+                d="M104,197 Q120,228 136,197"
+                stroke="var(--gold)"
+                stroke-width="3.6"
+                stroke-dasharray="4 1.4"
+                stroke-linecap="round"
+                fill="none"
+              />
+            </g>
+
+            <g id="fig-front">
+              <use href="#body-front" />
+              <use href="#head-front" />
+            </g>
+
+            <!-- Cabeça de perfil, olhando para a direita. Pontos medidos na foto de lado (escala: altura topo→fim da barba = 125). -->
+            <g id="head-side" class="fig">
+              <path
+                d="M105,58 C122,57 138,62 150,72 C158,79 162,87 163,95 L163.5,102 C163,108 162,112 162,117 C165,122 170,129 172,134 C173,138 170,140 167,141 L168,146 C167,150 166,152 166,153 L167,158 C166,166 165,172 163,176 C150,180 130,174 116,162 C104,154 88,150 76,146 C68,136 65,122 65,104 C65,82 82,58 105,58 Z"
+                fill="var(--skin)"
+              />
+              <path
+                class="ns"
+                d="M65,104 C65,82 82,58 105,58 C122,57 138,62 150,72 C155,76 158,81 160,86 C150,88 138,92 130,98 C126,101 124,104 122,106 L102,104 C90,110 80,124 76,140 C70,130 65,118 65,104 Z"
+                fill="url(#buzz-v)"
+              />
+              <path
+                class="ns"
+                d="M114,148 C128,149 146,150 158,152 C160,146 163,143 166,142 L170,144 C170,150 169,156 168,160 C168,166 168,172 166,177 C163,181 156,183 148,183 C136,181 124,176 116,171 C113,164 112,156 114,148 Z"
+                fill="var(--beard)"
+              />
+              <path
+                d="M166,142 L170,144 C170,150 169,156 168,160 C168,166 168,172 166,177 C163,181 156,183 148,183 C136,181 124,176 116,171"
+                fill="none"
+              />
+              <path
+                class="ns"
+                d="M118,118 C132,126 146,138 158,150 C146,150 128,150 113,150 C114,140 116,128 118,118 Z"
+                fill="url(#side-fade)"
+              />
+              <path
+                class="ns"
+                d="M114,146 C110,154 109,162 113,170 L117,171 C114,163 114,154 115,146 Z"
+                fill="url(#fade-h)"
+              />
+              <path d="M164,145 Q168,144 170,146.5 Q168,150 164,150 Z" fill="var(--lips)" />
+              <path d="M163,153 Q167,152 168.5,155 Q167,159 163,158 Z" fill="var(--lips)" />
+              <ellipse cx="111" cy="120" rx="9" ry="16" fill="var(--skin)" />
+              <path
+                class="ns"
+                d="M107,110 C114,109 117,118 113,124 C111,128 112,131 115,133"
+                stroke="var(--skin-shade)"
+                stroke-width="2"
+                fill="none"
+                stroke-linecap="round"
+              />
+              <path
+                class="ns"
+                d="M145,103 Q155,98 163.5,100 L163,106 Q155,104 145,108 Z"
+                fill="var(--beard)"
+              />
+              <ellipse class="ns" cx="158" cy="115" rx="3" ry="5" fill="var(--eye)" />
+            </g>
+
+            <!-- Corpo de perfil, olhando para a direita. -->
+            <g id="body-side" class="fig">
+              <path
+                d="M80,140 C85,160 89,180 90,198 L134,198 C132,186 127,175 119,165 Z"
+                fill="var(--skin)"
+              />
+              <path
+                d="M96,200 C96,196 100,194 106,194 H136 C142,194 148,196 148,202 L152,306 C152,312 148,316 142,316 H100 C94,316 90,312 90,306 Z"
+                fill="var(--tee)"
+              />
+              <path d="M142,198 H150 L156,304 C156,310 152,312 148,312 H145 Z" fill="var(--bib)" />
+              <path d="M92,198 H100 L96,312 H90 C86,312 84,308 84,304 Z" fill="var(--bib)" />
+              <path
+                class="ns"
+                d="M94,196 Q122,212 148,204"
+                stroke="var(--gold)"
+                stroke-width="3.6"
+                stroke-dasharray="4 1.4"
+                stroke-linecap="round"
+                fill="none"
+              />
+              <path d="M88,310 H154 L158,368 H86 Z" fill="var(--shorts)" />
+              <rect x="104" y="356" width="32" height="50" rx="8" fill="var(--skin)" />
+              <rect x="106" y="404" width="28" height="54" rx="8" fill="var(--skin)" />
+              <circle cx="120" cy="404" r="10" fill="var(--skin-shade)" />
+              <rect x="105" y="414" width="30" height="44" rx="6" fill="var(--sock)" />
+              <rect class="ns" x="106" y="421" width="28" height="5" fill="var(--stripe)" />
+              <path
+                d="M100,454 H140 C152,454 160,462 160,470 V474 C160,478 156,480 152,480 H102 C98,480 96,478 96,474 V458 C96,456 98,454 100,454 Z"
+                fill="var(--shoe)"
+              />
+              <rect x="109" y="204" width="24" height="58" rx="11" fill="var(--skin)" />
+              <rect x="110" y="262" width="22" height="46" rx="10" fill="var(--skin)" />
+              <circle cx="121" cy="262" r="9" fill="var(--skin-shade)" />
+              <rect x="106" y="198" width="30" height="36" rx="13" fill="var(--tee)" />
+              <ellipse cx="121" cy="318" rx="12" ry="13" fill="var(--skin)" />
+              <ellipse cx="131" cy="312" rx="4.5" ry="6" fill="var(--skin)" />
+            </g>
+
+            <g id="fig-side">
+              <use href="#body-side" />
+              <use href="#head-side" />
+            </g>
+          </defs>
+
+          <!-- linhas de proporção -->
+          <g>
+            <line class="guide" x1="96" x2="1084" y1="58" y2="58" />
+            <line class="guide" x1="96" x2="1084" y1="115" y2="115" />
+            <line class="guide" x1="96" x2="1084" y1="183" y2="183" />
+            <line class="guide" x1="96" x2="1084" y1="312" y2="312" />
+            <line class="guide" x1="96" x2="1084" y1="404" y2="404" />
+            <line class="guide" x1="96" x2="1084" y1="480" y2="480" />
+            <text class="guide-label" x="8" y="62">topo</text>
+            <text class="guide-label" x="8" y="119">olhos</text>
+            <text class="guide-label" x="8" y="187">fim da barba</text>
+            <text class="guide-label" x="8" y="316">quadril</text>
+            <text class="guide-label" x="8" y="408">joelho</text>
+            <text class="guide-label" x="8" y="484">chão</text>
+          </g>
+          <!-- régua em cabeças (cabeça = topo até o fim da barba) -->
+          <g>
+            <line class="ruler" x1="1110" x2="1110" y1="58" y2="480" />
+            <line class="ruler" x1="1102" x2="1118" y1="58" y2="58" />
+            <line class="ruler" x1="1102" x2="1118" y1="183" y2="183" />
+            <line class="ruler" x1="1102" x2="1118" y1="308" y2="308" />
+            <line class="ruler" x1="1102" x2="1118" y1="433" y2="433" />
+            <line class="ruler" x1="1102" x2="1118" y1="480" y2="480" />
+            <text class="ruler-label" x="1098" y="124" text-anchor="end">1</text>
+            <text class="ruler-label" x="1098" y="249" text-anchor="end">2</text>
+            <text class="ruler-label" x="1098" y="374" text-anchor="end">3</text>
+            <text class="ruler-label" x="1098" y="461" text-anchor="end">0,4</text>
+            <text class="ruler-label" x="1136" y="504" text-anchor="end">cabeças</text>
+          </g>
+
+          <g transform="translate(100,0)">
+            <use href="#fig-front" />
+            <text class="view-label" x="120" y="512" text-anchor="middle">FRENTE</text>
+            <text class="view-sub" x="120" y="528" text-anchor="middle">fotos frontais</text>
+          </g>
+
+          <g transform="translate(350,0)">
+            <use href="#fig-side" />
+            <text class="view-label" x="120" y="512" text-anchor="middle">LADO DIREITO</text>
+            <text class="view-sub" x="120" y="528" text-anchor="middle">
+              medido na foto de lado
+            </text>
+          </g>
+
+          <g transform="translate(590,0)">
+            <g transform="translate(240,0) scale(-1,1)">
+              <use href="#fig-side" />
+            </g>
+            <text class="view-label" x="120" y="512" text-anchor="middle">LADO ESQUERDO</text>
+            <text class="view-sub" x="120" y="528" text-anchor="middle">espelho do direito</text>
+          </g>
+
+          <g transform="translate(840,0)" class="fig">
+            <path
+              d="M84,150 C86,172 102,181 120,183 C138,181 154,172 156,150 Z"
+              fill="var(--beard)"
+            />
+            <rect x="103" y="166" width="34" height="32" fill="var(--skin)" />
+            <ellipse cx="69" cy="119" rx="8" ry="15" fill="var(--skin)" />
+            <ellipse cx="171" cy="119" rx="8" ry="15" fill="var(--skin)" />
+            <path
+              d="M120,58 C153,58 167,82 169,112 C172,148 156,174 120,174 C84,174 68,148 71,112 C73,82 87,58 120,58 Z"
+              fill="var(--skin)"
+            />
+            <path
+              class="ns"
+              d="M71,112 C73,82 87,58 120,58 C153,58 167,82 169,112 C170,140 160,160 140,166 H100 C80,160 70,140 71,112 Z"
+              fill="url(#buzz-v)"
+            />
+            <rect x="56" y="204" width="24" height="58" rx="11" fill="var(--skin)" />
+            <rect x="57" y="262" width="22" height="46" rx="10" fill="var(--skin)" />
+            <circle cx="68" cy="262" r="9" fill="var(--skin-shade)" />
+            <rect x="54" y="198" width="28" height="36" rx="13" fill="var(--tee)" />
+            <ellipse cx="68" cy="318" rx="12" ry="13" fill="var(--skin)" />
+            <rect x="160" y="204" width="24" height="58" rx="11" fill="var(--skin)" />
+            <rect x="161" y="262" width="22" height="46" rx="10" fill="var(--skin)" />
+            <circle cx="172" cy="262" r="9" fill="var(--skin-shade)" />
+            <rect x="158" y="198" width="28" height="36" rx="13" fill="var(--tee)" />
+            <ellipse cx="172" cy="318" rx="12" ry="13" fill="var(--skin)" />
+            <rect x="86" y="356" width="30" height="50" rx="8" fill="var(--skin)" />
+            <rect x="88" y="404" width="26" height="54" rx="8" fill="var(--skin)" />
+            <circle cx="101" cy="404" r="10" fill="var(--skin-shade)" />
+            <rect x="87" y="414" width="28" height="44" rx="6" fill="var(--sock)" />
+            <rect class="ns" x="88" y="421" width="26" height="5" fill="var(--stripe)" />
+            <rect x="81" y="456" width="36" height="24" rx="10" fill="var(--shoe)" />
+            <rect x="124" y="356" width="30" height="50" rx="8" fill="var(--skin)" />
+            <rect x="126" y="404" width="26" height="54" rx="8" fill="var(--skin)" />
+            <circle cx="139" cy="404" r="10" fill="var(--skin-shade)" />
+            <rect x="125" y="414" width="28" height="44" rx="6" fill="var(--sock)" />
+            <rect class="ns" x="126" y="421" width="26" height="5" fill="var(--stripe)" />
+            <rect x="123" y="456" width="36" height="24" rx="10" fill="var(--shoe)" />
+            <path d="M80,310 H160 L164,368 H124 L120,356 L116,368 H76 Z" fill="var(--shorts)" />
+            <path
+              d="M82,204 C82,198 90,194 100,194 H140 C150,194 158,198 158,204 L162,306 C162,312 158,316 152,316 H88 C82,316 78,312 78,306 Z"
+              fill="var(--tee)"
+            />
+            <path
+              d="M88,196 H104 C110,201 130,201 136,196 H152 L156,302 C156,308 152,312 146,312 H94 C88,312 84,308 84,302 Z"
+              fill="var(--bib)"
+            />
+            <path
+              class="ns"
+              d="M88,196 H104 C110,201 130,201 136,196 H152 L156,302 C156,308 152,312 146,312 H94 C88,312 84,308 84,302 Z"
+              fill="url(#mesh)"
+            />
+            <path
+              class="ns"
+              d="M104,196 C108,190 132,190 136,196"
+              stroke="var(--gold)"
+              stroke-width="3.6"
+              stroke-dasharray="4 1.4"
+              stroke-linecap="round"
+              fill="none"
+            />
+            <text class="view-label" x="120" y="512" text-anchor="middle">COSTAS</text>
+            <text class="view-sub" x="120" y="528" text-anchor="middle">
+              inferido · confere com o vídeo
+            </text>
+          </g>
+        </svg>
+      </section>
+
+      <div class="grid">
+        <article class="card">
+          <h2>Cabeça e peça trocável</h2>
+          <div class="heads">
+            <figure>
+              <svg
+                viewBox="56 46 128 150"
+                role="img"
+                aria-label="Cabeça careca com barba aparada, de frente"
+              >
+                <use href="#head-front" />
+              </svg>
+              <figcaption><strong>Base: careca</strong>De frente</figcaption>
+            </figure>
+            <figure>
+              <svg
+                viewBox="56 46 128 150"
+                role="img"
+                aria-label="Cabeça careca de perfil, com a barba saindo de baixo da orelha"
+              >
+                <use href="#head-side" />
+              </svg>
+              <figcaption><strong>Perfil</strong>Medido na foto</figcaption>
+            </figure>
+            <figure>
+              <svg
+                viewBox="56 46 128 150"
+                role="img"
+                aria-label="Cabeça de frente com boné virado para trás"
+              >
+                <use href="#head-front" />
+                <g class="fig">
+                  <path
+                    d="M69,106 C69,70 92,50 120,50 C148,50 171,70 171,106 C150,97 90,97 69,106 Z"
+                    fill="var(--cap)"
+                  />
+                  <path d="M102,101 C102,88 138,88 138,101 Z" fill="var(--skin)" />
+                  <rect x="100" y="84" width="40" height="6" rx="2" fill="var(--strap)" />
+                  <rect x="123" y="82" width="7" height="10" rx="1" fill="none" stroke="#c9ccc8" />
+                </g>
+              </svg>
+              <figcaption><strong>Boné virado</strong>Peça <code>acc_cap</code></figcaption>
+            </figure>
+          </div>
+          <p class="note">
+            A barba é uma peça própria, encaixada no rosto. Ela é cheia na mandíbula e no queixo e
+            vai rareando na bochecha até um pouco abaixo dos olhos. As costeletas sobem em degradê
+            até a cabeça raspada. De lado, a barba começa logo abaixo da orelha, também em degradê.
+            A orelha é grande: vai da altura da sobrancelha até a base do nariz.
+          </p>
+        </article>
+
+        <article class="card">
+          <h2>Articulações</h2>
+          <div class="joints">
+            <svg
+              viewBox="40 40 160 450"
+              role="img"
+              aria-label="Mapa de articulações sobre o boneco de frente"
+            >
+              <g opacity="0.4"><use href="#fig-front" /></g>
+              <g font-size="11" text-anchor="middle" font-weight="600">
+                <circle cx="120" cy="190" r="9" fill="var(--accent)" />
+                <text x="120" y="194" fill="#fff">1</text>
+                <circle cx="68" cy="208" r="9" fill="var(--accent)" />
+                <text x="68" y="212" fill="#fff">2</text>
+                <circle cx="172" cy="208" r="9" fill="var(--accent)" />
+                <text x="172" y="212" fill="#fff">2</text>
+                <circle cx="68" cy="262" r="9" fill="var(--accent)" />
+                <text x="68" y="266" fill="#fff">3</text>
+                <circle cx="172" cy="262" r="9" fill="var(--accent)" />
+                <text x="172" y="266" fill="#fff">3</text>
+                <circle cx="68" cy="306" r="9" fill="var(--accent)" />
+                <text x="68" y="310" fill="#fff">4</text>
+                <circle cx="172" cy="306" r="9" fill="var(--accent)" />
+                <text x="172" y="310" fill="#fff">4</text>
+                <circle cx="120" cy="312" r="9" fill="var(--accent)" />
+                <text x="120" y="316" fill="#fff">5</text>
+                <circle cx="101" cy="358" r="9" fill="var(--accent)" />
+                <text x="101" y="362" fill="#fff">6</text>
+                <circle cx="139" cy="358" r="9" fill="var(--accent)" />
+                <text x="139" y="362" fill="#fff">6</text>
+                <circle cx="101" cy="404" r="9" fill="var(--accent)" />
+                <text x="101" y="408" fill="#fff">7</text>
+                <circle cx="139" cy="404" r="9" fill="var(--accent)" />
+                <text x="139" y="408" fill="#fff">7</text>
+              </g>
+            </svg>
+            <pre class="tree">root
+└ <span class="n">5</span> hips
+  ├ spine
+  │ ├ <span class="n">1</span> neck
+  │ │ └ head
+  │ │   ├ beard
+  │ │   └ acc_cap <span class="c">opc.</span>
+  │ ├ <span class="n">2</span> upper_arm.L/R
+  │ │ └ <span class="n">3</span> forearm
+  │ │   └ <span class="n">4</span> hand
+  │ └ acc_chain
+  └ <span class="n">6</span> thigh.L/R
+    └ <span class="n">7</span> shin</pre>
+          </div>
+          <p class="note">
+            Cada peça gira só na sua articulação, sem deformar a malha. Cotovelos (3) e joelhos (7)
+            existem para o chute e a corrida ficarem legíveis. Meião e chuteira fazem parte da peça
+            da canela.
+          </p>
+        </article>
+
+        <article class="card">
+          <h2>Cores</h2>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Peça</th>
+                  <th>Cor</th>
+                  <th>Origem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Pele</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--skin)"></span>#B78D74
+                  </td>
+                  <td><span class="chip photo">fotos · média</span></td>
+                </tr>
+                <tr>
+                  <td>Barba e sobrancelhas</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--beard)"></span>#1C1A1C
+                  </td>
+                  <td><span class="chip photo">fotos</span></td>
+                </tr>
+                <tr>
+                  <td>Olhos</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--eye)"></span>#3A2418
+                  </td>
+                  <td><span class="chip photo">fotos</span></td>
+                </tr>
+                <tr>
+                  <td>Lábios</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--lips)"></span>#B9776E
+                  </td>
+                  <td><span class="chip proposal">proposta</span></td>
+                </tr>
+                <tr>
+                  <td>Colete</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--bib)"></span>#9BE22D
+                  </td>
+                  <td><span class="chip video">vídeo ≈</span></td>
+                </tr>
+                <tr>
+                  <td>Camiseta, manga curta</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--tee)"></span>#24272B
+                  </td>
+                  <td><span class="chip video">vídeo</span></td>
+                </tr>
+                <tr>
+                  <td>Short</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--shorts)"></span>#1B1D20
+                  </td>
+                  <td><span class="chip video">vídeo</span></td>
+                </tr>
+                <tr>
+                  <td>Meião</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--sock)"></span>#1B1D20
+                  </td>
+                  <td><span class="chip inferred">inferido</span></td>
+                </tr>
+                <tr>
+                  <td>Faixa do meião</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--stripe)"></span>#C8102E
+                  </td>
+                  <td><span class="chip proposal">proposta</span></td>
+                </tr>
+                <tr>
+                  <td>Chuteira</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--shoe)"></span>#141517
+                  </td>
+                  <td><span class="chip inferred">inferido</span></td>
+                </tr>
+                <tr>
+                  <td>Corrente</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--gold)"></span>#D4A93A
+                  </td>
+                  <td><span class="chip photo">fotos</span></td>
+                </tr>
+                <tr>
+                  <td>Boné</td>
+                  <td class="hex">
+                    <span class="sw" style="background: var(--cap)"></span>#6E6257
+                  </td>
+                  <td><span class="chip photo">foto</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="note">
+            A faixa vermelha no meião preto é a referência discreta ao Flamengo prevista no plano:
+            só a cor, sem escudo nem nome. As cores medidas variam com a luz das fotos e precisam
+            ser aprovadas num render com a luz do campo.
+          </p>
+        </article>
+
+        <article class="card penalty">
+          <h2>O lance a recriar</h2>
+          <svg viewBox="0 0 320 236" role="img" aria-labelledby="pen-title">
+            <title id="pen-title">
+              Gol visto de quem chuta, com a bola entrando no ângulo superior direito.
+            </title>
+            <rect x="0" y="150" width="320" height="86" fill="var(--pitch)" />
+            <g stroke="var(--net)" stroke-width="0.8">
+              <line x1="30" x2="290" y1="62" y2="62" />
+              <line x1="30" x2="290" y1="84" y2="84" />
+              <line x1="30" x2="290" y1="106" y2="106" />
+              <line x1="30" x2="290" y1="128" y2="128" />
+              <line x1="56" x2="56" y1="40" y2="150" />
+              <line x1="82" x2="82" y1="40" y2="150" />
+              <line x1="108" x2="108" y1="40" y2="150" />
+              <line x1="134" x2="134" y1="40" y2="150" />
+              <line x1="160" x2="160" y1="40" y2="150" />
+              <line x1="186" x2="186" y1="40" y2="150" />
+              <line x1="212" x2="212" y1="40" y2="150" />
+              <line x1="238" x2="238" y1="40" y2="150" />
+              <line x1="264" x2="264" y1="40" y2="150" />
+            </g>
+            <path
+              d="M30,150 V40 H290 V150"
+              fill="none"
+              stroke="var(--post)"
+              stroke-width="6"
+              stroke-linejoin="round"
+            />
+            <path
+              d="M30,150 V40 H290 V150"
+              fill="none"
+              stroke="var(--outline)"
+              stroke-width="1"
+              stroke-linejoin="round"
+              opacity="0.5"
+            />
+            <path
+              d="M160,222 Q236,150 270,60"
+              fill="none"
+              stroke="var(--accent)"
+              stroke-width="2"
+              stroke-dasharray="5 4"
+            />
+            <circle
+              cx="270"
+              cy="58"
+              r="8"
+              fill="var(--post)"
+              stroke="var(--outline)"
+              stroke-width="1.5"
+            />
+            <circle
+              cx="160"
+              cy="224"
+              r="7"
+              fill="var(--post)"
+              stroke="var(--outline)"
+              stroke-width="1.5"
+              opacity="0.6"
+            />
+            <text
+              x="300"
+              y="28"
+              text-anchor="end"
+              font-size="11"
+              fill="var(--accent)"
+              font-weight="600"
+            >
+              superior direito
+            </text>
+            <text x="160" y="16" text-anchor="middle" font-size="10" fill="var(--muted)">
+              visto de quem chuta
+            </text>
+          </svg>
+          <svg
+            viewBox="0 0 320 64"
+            role="img"
+            aria-label="Linha do tempo de 10 segundos: corrida de 3,0 a 4,0 s, contato de 4,0 a 4,4 s, reação a partir de 5 s"
+          >
+            <line x1="10" x2="310" y1="30" y2="30" stroke="var(--line)" stroke-width="2" />
+            <rect
+              x="100"
+              y="22"
+              width="30"
+              height="16"
+              fill="var(--bib)"
+              stroke="var(--outline)"
+              stroke-width="1"
+            />
+            <rect x="130" y="22" width="12" height="16" fill="var(--accent)" />
+            <rect x="160" y="22" width="150" height="16" fill="var(--line)" />
+            <g font-size="9" fill="var(--muted)" text-anchor="middle">
+              <text x="10" y="56">0 s</text>
+              <text x="70" y="56">2</text>
+              <text x="130" y="56">4</text>
+              <text x="190" y="56">6</text>
+              <text x="250" y="56">8</text>
+              <text x="310" y="56">10 s</text>
+            </g>
+            <g font-size="9" fill="var(--ink)">
+              <text x="127" y="15" text-anchor="end">corrida</text>
+              <text x="133" y="15" fill="var(--accent)">contato</text>
+              <text x="200" y="15">reação</text>
+            </g>
+          </svg>
+          <p class="note">
+            Tempos estimados pelos quadros do vídeo. O ângulo foi informado por Ruan; a bola não
+            aparece com nitidez na gravação.
+          </p>
+        </article>
+
+        <article class="card">
+          <h2>Regras de forma</h2>
+          <ul class="list">
+            <li>
+              Cabeça ovalada, mais larga na mandíbula, sem “capacete” de cabelo; de lado, crânio
+              alto e nuca arredondada.
+            </li>
+            <li>Mão arredondada, fechada, com polegar saliente; sem pinça em C.</li>
+            <li>Cotovelos e joelhos articulados, além de ombros e quadril.</li>
+            <li>Colete sem número, marca ou texto. Nenhum logotipo nas peças.</li>
+            <li>Proporção de cerca de 3,4 cabeças de altura, contando a barba.</li>
+            <li>Clique na cena por uma caixa invisível <code>hs_personagem</code>.</li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <h2>Para confirmar</h2>
+          <ul class="list">
+            <li>Costas deduzidas das fotos e do vídeo; o lado esquerdo é o direito espelhado.</li>
+            <li>Meião e chuteira não aparecem com nitidez no vídeo; ficaram pretos.</li>
+            <li>Faixa vermelha no meião como referência ao Flamengo.</li>
+            <li>Tom de pele <span class="hex">#B78D74</span> sob a luz do campo.</li>
+            <li>Altura do boneco em metros, definida com a escala do campo na Etapa 4.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </body>
+</html>

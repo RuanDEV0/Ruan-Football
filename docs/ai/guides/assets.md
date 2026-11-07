@@ -4,15 +4,15 @@
 
 ## Onde cada arquivo fica
 
-| Tipo | Fonte (não publicada) | Publicado |
-| --- | --- | --- |
-| Modelos | `assets-src/blender/*.blend` (Git LFS) | `public/models/*.glb` otimizados |
-| Texturas fonte | `assets-src/blender/textures/` (Git LFS) | Embutidas no GLB, em KTX2 ou WebP |
-| Referências visuais | `assets-src/referencias/` | — |
-| Vídeo original | **Fora do Git** (backup pessoal de Ruan) | `public/video/` (MP4, pôster, `.vtt`) |
-| Fotos pessoais de referência | **Fora do Git** | — |
-| Capturas de projetos e renders | `src/assets/` | Processadas por `astro:assets` |
-| Currículo | — | `public/cv/ruan-oliveira-cv.pdf` |
+| Tipo                           | Fonte (não publicada)                    | Publicado                             |
+| ------------------------------ | ---------------------------------------- | ------------------------------------- |
+| Modelos                        | `assets-src/blender/*.blend` (Git LFS)   | `public/models/*.glb` otimizados      |
+| Texturas fonte                 | `assets-src/blender/textures/` (Git LFS) | Embutidas no GLB, em KTX2 ou WebP     |
+| Referências visuais            | `assets-src/referencias/`                | —                                     |
+| Vídeo original                 | **Fora do Git** (backup pessoal de Ruan) | `public/video/` (MP4, pôster, `.vtt`) |
+| Fotos pessoais de referência   | **Fora do Git**                          | —                                     |
+| Capturas de projetos e renders | `src/assets/`                            | Processadas por `astro:assets`        |
+| Currículo                      | —                                        | `public/cv/ruan-oliveira-cv.pdf`      |
 
 O Git LFS precisa estar instalado (`git lfs install`) antes do primeiro `.blend`. Não versione `.blend1` nem arquivos temporários.
 
@@ -44,3 +44,10 @@ O Git LFS precisa estar instalado (`git lfs install`) antes do primeiro `.blend`
 - Imagens, texturas ou modelos gerados por IA só entram se a licença da ferramenta permitir uso público e se Ruan aprovar.
 - Registre em `assets-src/referencias/ORIGEM.md` a ferramenta, a data e a licença de cada asset gerado ou de terceiros.
 - Não use assets que imitem marcas, personagens ou cenários existentes.
+
+## Referências visuais
+
+- Todo arquivo de `assets-src/referencias/` tem uma linha em `ORIGEM.md` (arquivo, ferramenta e autoria, data, fontes consultadas, licença), inclusive desenhos feitos por agentes.
+- Referências não embutem fotos nem quadros do vídeo (`data:image`, `.jpg`, `.heic`). As fontes ficam fora do Git e são citadas apenas por descrição.
+- Folha atual do personagem: `assets-src/referencias/folha-boneco.html`; decisões e pendências em `docs/conteudo/personagem.md`.
+- `scripts/check-assets.sh`, chamado por `scripts/verify.sh`, confere essas regras, a ausência de vídeo fora de `public/video/` e de citações à marca de referência do boneco em `src/`, `public/` e `assets-src/`.

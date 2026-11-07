@@ -1,0 +1,10 @@
+# O conversor Astro fixa core 1.11.3, mas deixa runtime como peer transitivo sem versão.
+# Impede a combinação automática com runtime 2 beta, que quebra astro check.
+packageExtensions:
+  '@astrojs/astro2tsx@0.1.3':
+    dependencies:
+      '@emnapi/runtime': 1.11.3
+  # O peer opcional de @puppeteer/browsers requer proxy-agent 8, separado do 6 usado pelo LHCI.
+  'puppeteer-core@25.16.0':
+    dependencies:
+      proxy-agent: 8.0.1

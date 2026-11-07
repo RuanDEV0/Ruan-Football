@@ -1,0 +1,44 @@
+{
+  "name": "ruan-football",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=26.13.0 <27"
+  },
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1",
+    "build": "astro build",
+    "preview": "astro preview --host 127.0.0.1",
+    "check": "astro check && tsc --noEmit",
+    "lint": "eslint . --max-warnings 0",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:performance": "lhci autorun"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "latest",
+    "astro": "latest",
+    "three": "latest"
+  },
+  "devDependencies": {
+    "@astrojs/check": "latest",
+    "@axe-core/playwright": "latest",
+    "@eslint/js": "^9.39.5",
+    "@lhci/cli": "latest",
+    "@playwright/test": "latest",
+    "@types/node": "latest",
+    "@types/three": "latest",
+    "eslint": "^9.39.5",
+    "eslint-plugin-astro": "1.7.0",
+    "eslint-plugin-jsx-a11y": "latest",
+    "globals": "latest",
+    "prettier": "latest",
+    "prettier-plugin-astro": "latest",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "latest",
+    "vitest": "latest"
+  }
+}

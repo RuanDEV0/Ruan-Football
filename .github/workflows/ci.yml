@@ -1,5 +1,4 @@
-# Verificação de cada pull request. A Etapa 0 acrescenta Node, pnpm e os passos da aplicação;
-# até lá, scripts/verify.sh verifica o harness e relata a aplicação como "pulado".
+# Mesmo ponto de verificação local e na CI; a publicação depende de autorização explícita.
 name: CI
 
 on:
@@ -17,14 +16,20 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
-
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+      - uses: pnpm/action-setup@v4
+      - name: Instalar dependências
+        run: pnpm install --frozen-lockfile
+      - name: Instalar navegadores de teste
+        run: pnpm exec playwright install --with-deps
       - name: Ferramentas do harness
         run: |
           shellcheck --version
           jq --version
-
       - name: Verificação completa
-        run: scripts/verify.sh
+        run: scripts/verify.sh --full

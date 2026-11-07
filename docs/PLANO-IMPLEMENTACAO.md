@@ -441,21 +441,21 @@ As etapas 0 e 1 podem correr em paralelo: a Etapa 0 é técnica e a Etapa 1 é e
 
 - [x] Criar o harness para agentes de IA (`AGENTS.md`, adaptadores por ferramenta e `docs/ai/`).
 - [x] Criar a verificação do harness: `scripts/verify.sh`, testes em `tests/harness/`, hooks do Claude Code, padrão de código e comentários (`docs/ai/guides/code-standards.md`), `.editorconfig`, `.shellcheckrc` e CI inicial.
-- [ ] Instalar `shellcheck` e `git-lfs` na máquina de desenvolvimento.
-- [ ] Registrar as escolhas da seção 12.
-- [ ] Mover este plano para `docs/` e criar `docs/decisoes/0001-stack.md`.
-- [ ] Scaffold Astro com TypeScript `strict`; pnpm, `.nvmrc`, `.editorconfig`, `.gitattributes` (Git LFS), `.gitignore` e `.env.example`.
-- [ ] Criar a estrutura de pastas da seção 3.7.
-- [ ] Definir os schemas das coleções (projeto, experiência, formação, certificação), com um item de exemplo marcado como `publishable: false`.
-- [ ] Criar `src/data/profile.ts` e `src/data/hotspots.ts` com os pontos da seção 2.
-- [ ] Criar layout base, tokens CSS, menu permanente, páginas vazias navegáveis e página 404.
-- [ ] Criar o módulo `experience/` com `boot()`, loop, redimensionamento, máquina de estados e eventos tipados, exibindo apenas um objeto de teste.
-- [ ] Implementar detecção de capacidade, movimento reduzido e apresentação alternativa sem WebGL.
-- [ ] Configurar Vitest, Playwright e axe, com ao menos um teste de cada, chamados por `scripts/verify.sh`.
+- [x] Instalar `shellcheck` e `git-lfs` na máquina de desenvolvimento.
+- [x] Registrar as escolhas da seção 12.
+- [x] Mover este plano para `docs/` e criar `docs/decisoes/0001-stack.md`.
+- [x] Scaffold Astro com TypeScript `strict`; pnpm, `.nvmrc`, `.editorconfig`, `.gitattributes` (Git LFS), `.gitignore` e `.env.example`.
+- [x] Criar a estrutura de pastas da seção 3.7.
+- [x] Definir os schemas das coleções (projeto, experiência, formação, certificação), com um item de exemplo marcado como `publishable: false`.
+- [x] Criar `src/data/profile.ts` e `src/data/hotspots.ts` com os pontos da seção 2.
+- [x] Criar layout base, tokens CSS, menu permanente, páginas vazias navegáveis e página 404.
+- [x] Criar o módulo `experience/` com `boot()`, loop, redimensionamento, máquina de estados e eventos tipados, exibindo apenas um objeto de teste.
+- [x] Implementar detecção de capacidade, movimento reduzido e apresentação alternativa sem WebGL.
+- [x] Configurar Vitest, Playwright e axe, com ao menos um teste de cada, chamados por `scripts/verify.sh`.
 - [ ] Ampliar `.github/workflows/ci.yml` (Node, pnpm, `scripts/verify.sh --full`, Lighthouse) e configurar o projeto na hospedagem, com prévia por PR e `noindex`.
-- [ ] Configurar Prettier e ESLint conforme `docs/ai/guides/code-standards.md`, incluindo as fronteiras de import.
-- [ ] Escrever o README: como rodar, scripts, convenções e como adicionar um projeto.
-- [ ] Separar a licença do código (MIT) da licença de conteúdo e assets.
+- [x] Configurar Prettier e ESLint conforme `docs/ai/guides/code-standards.md`, incluindo as fronteiras de import.
+- [x] Escrever o README: como rodar, scripts, convenções e como adicionar um projeto.
+- [x] Separar a licença do código (MIT) da licença de conteúdo e assets.
 
 **Entrega:** URL de prévia com páginas vazias navegáveis, menu funcional e canvas de teste; CI verde.
 

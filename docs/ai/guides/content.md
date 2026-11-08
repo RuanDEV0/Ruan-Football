@@ -22,14 +22,14 @@ Não resolva por conta própria; apenas sinalize se o texto depender delas:
 
 ## Coleções e dados
 
-| Local | Conteúdo |
-| --- | --- |
-| `src/content/projetos/` | Um arquivo Markdown por projeto |
-| `src/content/experiencia/` | DPE/RR, Compass UOL e outras |
-| `src/content/formacao/` | Graduação e cursos |
-| `src/content/certificacoes/` | Somente certificações; cursos ficam em `formacao/` |
-| `src/data/profile.ts` | Nome, título, cidade, contatos públicos, link do currículo |
-| `src/data/hotspots.ts` | Pontos interativos da cena e suas rotas |
+| Local                        | Conteúdo                                                   |
+| ---------------------------- | ---------------------------------------------------------- |
+| `src/content/projetos/`      | Um arquivo Markdown por projeto                            |
+| `src/content/experiencia/`   | DPE/RR, Compass UOL e outras                               |
+| `src/content/formacao/`      | Graduação e cursos                                         |
+| `src/content/certificacoes/` | Somente certificações; cursos ficam em `formacao/`         |
+| `src/data/profile.ts`        | Nome, título, cidade, contatos públicos, link do currículo |
+| `src/data/hotspots.ts`       | Pontos interativos da cena e suas rotas                    |
 
 Os schemas ficam em `src/content.config.ts`. Campos novos entram primeiro no schema.
 
@@ -66,3 +66,7 @@ Projetos backend usam diagramas em SVG e exemplos de requisição e resposta. N�
 - Caso sem autorização ou com pendências: `publishable: false`. Ele existe no repositório, mas não gera página nem aparece no menu.
 - Material institucional (telas, documentos, nomes de pessoas, dados internos) só entra com autorização expressa de Ruan. Na dúvida, não inclua e pergunte.
 - Antes de marcar `publishable: true`, siga `docs/ai/procedures/review-content.md`.
+
+## Revisão editorial local
+
+A rota `/revisao`, registrada somente em desenvolvimento na configuração do Astro, permite que Ruan leia os rascunhos do roteiro da Etapa 1. Os textos vêm do roteiro e do perfil existentes. Essa visualização não altera `publishable`, não registra aprovação e não existe no build estático; manter testes para essa exclusão ao modificar a revisão.

@@ -9,6 +9,6 @@ export const hotspots = [
   { id: 'scoreboard', label: 'Projetos', route: '/projetos', object: 'hs_placar' },
   { id: 'bench', label: 'Experiência e formação', route: '/experiencia', object: 'hs_banco' },
   { id: 'character', label: 'Sobre o Ruan', route: '/sobre', object: 'hs_personagem' },
-  { id: 'goal', label: 'O pênalti', route: '/sobre#penalti', object: 'hs_gol' },
+  { id: 'goal', label: 'Pênalti', route: '/sobre#penalti', object: 'hs_gol' },
 ] as const satisfies readonly Hotspot[];
 export type HotspotId = (typeof hotspots)[number]['id'];

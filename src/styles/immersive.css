@@ -1,0 +1,276 @@
+/* Home em tela cheia com a cena (ADR 0006). */
+body.immersive header {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: var(--layer-header);
+  width: 100%;
+  min-height: var(--size-header);
+  align-items: center;
+  border-bottom: 0;
+  background: linear-gradient(var(--color-overlay), transparent);
+}
+/* Durante a cena, tudo acontece no campo (ADR 0007): o cabeçalho só aparece ao receber o foco do
+   teclado, e continua sendo o caminho para as páginas completas. */
+body.immersive:has(.stage:is([data-mode='loading'], [data-mode='ready'], [data-mode='playing']))
+  header:not(:focus-within) {
+  opacity: 0;
+  pointer-events: none;
+}
+:root[data-scene-auto] body.immersive:has(.stage[data-mode='intro']) header:not(:focus-within) {
+  opacity: 0;
+  pointer-events: none;
+}
+body.immersive main {
+  width: 100%;
+  min-height: 0;
+  padding: 0;
+}
+.menu--collapsible {
+  position: relative;
+}
+.menu--collapsible summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--size-touch);
+  padding: var(--space-1) var(--space-3);
+  border: var(--border) solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-overlay);
+  cursor: pointer;
+  list-style: none;
+}
+.menu--collapsible summary::-webkit-details-marker {
+  display: none;
+}
+.menu--collapsible[open] summary {
+  border-color: var(--color-focus);
+}
+.menu--collapsible nav {
+  position: absolute;
+  top: calc(100% + var(--space-1));
+  right: 0;
+  min-width: 14rem;
+  padding: var(--space-1) var(--space-2);
+  border: var(--border) solid var(--color-line);
+  border-radius: var(--radius);
+  background: var(--color-overlay);
+}
+.menu--collapsible nav ul {
+  flex-direction: column;
+  gap: 0;
+}
+
+.stage {
+  position: relative;
+  display: grid;
+  grid-template-areas:
+    'intro'
+    'scene';
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding-top: var(--size-header);
+}
+.stage .scene {
+  grid-area: scene;
+  height: auto;
+  min-height: var(--size-scene);
+  border: 0;
+}
+.stage-intro {
+  grid-area: intro;
+  align-self: center;
+  padding: var(--space-4) var(--space-3);
+}
+.stage-intro h1 {
+  margin-block: var(--space-1) var(--space-2);
+}
+.stage-intro .actions {
+  margin-block: var(--space-3);
+}
+.button--primary {
+  border-color: var(--color-focus);
+  font-weight: 700;
+}
+/* O carregamento existe desde a primeira pintura quando a cena carrega sozinha: aparecer depois
+   deslocaria a apresentação centralizada (CLS). */
+.stage .loader {
+  display: none;
+}
+:root[data-scene-auto] .stage[data-mode='intro'] .loader,
+.stage[data-mode='loading'] .loader,
+.stage[data-mode='ready'] .loader {
+  display: block;
+}
+[data-status-text] {
+  min-height: calc(var(--line-height) * 3em);
+}
+/* Durante o carregamento a etapa já aparece no próprio carregamento; a região viva segue anunciando. */
+:root[data-scene-auto] .stage[data-mode='intro'] [data-status-text],
+.stage[data-mode='loading'] [data-status-text],
+.stage[data-mode='ready'] [data-status-text] {
+  visibility: hidden;
+}
+@media (min-width: 60rem) {
+  .stage {
+    grid-template-columns: minmax(20rem, 28rem) 1fr;
+    grid-template-areas: 'intro scene';
+  }
+}
+
+/* Carregando, pronto e em jogo: a cena ocupa a tela e a apresentação flutua sobre ela. */
+:root[data-scene-auto] .stage[data-mode='intro'],
+.stage[data-mode='loading'],
+.stage[data-mode='ready'],
+.stage[data-mode='playing'] {
+  display: block;
+  height: 100vh;
+  height: 100dvh;
+  padding-top: 0;
+  overflow: hidden;
+}
+:root[data-scene-auto] .stage[data-mode='intro'] .scene,
+.stage[data-mode='loading'] .scene,
+.stage[data-mode='ready'] .scene,
+.stage[data-mode='playing'] .scene {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+}
+:root[data-scene-auto] .stage[data-mode='intro'] .stage-intro,
+.stage[data-mode='loading'] .stage-intro,
+.stage[data-mode='ready'] .stage-intro,
+.stage[data-mode='playing'] .stage-intro {
+  position: absolute;
+  inset: 0;
+  z-index: var(--layer-intro);
+  /* O Chrome aplica align-self a elementos absolutos: center encolheria a camada à altura do texto. */
+  align-self: stretch;
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  padding: var(--size-header) var(--space-3) var(--space-4);
+  background: radial-gradient(ellipse at 50% 40%, var(--color-night-sky), var(--color-night) 70%);
+  text-align: center;
+  transition:
+    opacity var(--duration-fade) ease,
+    visibility var(--duration-fade);
+}
+:root[data-scene-auto] .stage[data-mode='intro'] .stage-intro p,
+.stage[data-mode='loading'] .stage-intro p,
+.stage[data-mode='ready'] .stage-intro p {
+  margin-inline: auto;
+}
+:root[data-scene-auto] .stage[data-mode='intro'] .actions,
+.stage[data-mode='loading'] .actions,
+.stage[data-mode='ready'] .actions {
+  justify-content: center;
+}
+/* Sem pointer-events desde o início do esmaecimento: a camada não pode engolir cliques na cena. */
+.stage[data-mode='playing'] .stage-intro {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+:root[data-scene-auto] .stage[data-mode='intro'] [data-illustration],
+.stage[data-mode='loading'] [data-illustration] {
+  display: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-intro {
+    transition: none;
+  }
+}
+
+/* Vinheta sobre o canvas: o diorama noturno se destaca do fundo, sem pós-processamento (ADR 0007). */
+.scene[data-mode='scene']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: var(--layer-scene);
+  background: radial-gradient(ellipse at 50% 45%, transparent 55%, var(--shadow-vignette));
+  pointer-events: none;
+}
+.scene-controls__light {
+  margin-inline-end: auto;
+}
+@media (max-width: 30rem) {
+  .scene-controls button {
+    padding-inline: var(--space-2);
+    font-size: var(--text-small);
+  }
+}
+.scene[data-view='focus'] .scene-hotspots {
+  display: none;
+}
+/* Unidades cqi valem para os filhos do contêiner: no próprio .scene-screen cairiam na viewport. */
+.scene-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: var(--layer-screens);
+  transform-origin: center;
+  container-type: size;
+  overflow: hidden;
+  border: var(--border) solid var(--color-screen-glow);
+  background: var(--color-screen);
+  color: var(--color-text);
+}
+.scene-screen__inner {
+  display: flex;
+  flex-direction: column;
+  gap: var(--screen-space);
+  height: 100%;
+  padding: calc(var(--screen-space) * 1.5);
+  overflow: auto;
+  border: calc(var(--screen-space) / 3) solid var(--color-screen-glow);
+  font-size: var(--screen-text);
+  line-height: 1.35;
+}
+.scene-screen__inner > * {
+  margin: 0;
+}
+.scene-screen__kind {
+  color: var(--color-screen-glow);
+  font-family: var(--font-mono);
+  font-size: var(--screen-kind);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.scene-screen h2 {
+  outline: none;
+  font-size: var(--screen-heading);
+  line-height: 1.1;
+}
+.scene-screen__body {
+  display: grid;
+  gap: var(--screen-space);
+}
+.scene-screen__body p,
+.scene-screen__body ul {
+  margin: 0;
+  max-width: none;
+}
+.scene-screen .button {
+  min-height: max(var(--size-touch), var(--screen-touch));
+  padding-inline: calc(var(--screen-space) * 1.5);
+  font-size: var(--screen-text);
+}
+.scene-screen__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--screen-space);
+  margin-top: auto;
+}
+.scene-screen__link {
+  border-color: var(--color-screen-glow);
+}
+.contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+  padding: 0;
+  list-style: none;
+}
+.scene-screen .contact-links {
+  gap: var(--screen-space);
+}

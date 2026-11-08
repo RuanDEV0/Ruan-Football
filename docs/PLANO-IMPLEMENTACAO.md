@@ -37,6 +37,10 @@ O visitante encontra o acesso ao campo, com a identificação profissional já v
 
 Pode entrar na experiência ou abrir os projetos diretamente. Ao entrar, a câmera atravessa brevemente o acesso e revela o campo society. Depois dessa apresentação, a exploração acontece em um único ambiente compacto.
 
+**Revisão aprovada em 07/11/2026 (ADR 0006):** a home ocupa a tela inteira com a cena. A identificação aparece sobre uma tela de carregamento temática, “bola rumo ao gol”, com progresso por etapas reais; ao concluir, “Entrar em campo” inicia a chegada. Ao focar um ponto, o conteúdo surge numa tela do próprio cenário, com link para a página completa. Sem JavaScript, sem WebGL ou no modo leve, a mesma área mostra a planta ilustrada com os pontos como links.
+
+**Revisão aprovada em 08/11/2026 (ADR 0007):** o campo é noturno e flutua como diorama sobre fundo escuro, com refletores que acendem durante a chegada. Ao terminar o carregamento, a home entra em campo sozinha. Nome, título e cidade aparecem em placas de LED à beira do gramado; os pontos são marcadores com pictograma que acendem o objeto, e “Voltar ao campo” fica na própria tela. Quatro alternativas de carregamento aguardam a escolha de Ruan.
+
 | Elemento | Conteúdo ou interação |
 | --- | --- |
 | Campo, alambrado e iluminação | Ambiente principal e identidade visual |
@@ -118,7 +122,8 @@ A cena começará simples. Texturas, iluminação, animações e efeitos serão 
 
 | Opção | Vantagens | Desvantagens |
 | --- | --- | --- |
-| **Painel lateral com resumo + link para a página completa (recomendada)** | A cena continua visível; a página completa tem URL própria, indexável e compartilhável, e funciona sem 3D | Resumo e página completa precisam ser coerentes (garantido pela fonte única de dados) |
+| **Telas no cenário com resumo + link para a página completa (aprovada no ADR 0006)** | Imersão no padrão pedido por Ruan; HTML real, nítido e acessível, das mesmas fontes das páginas | Sem oclusão: cada tela aparece só no ponto de vista do seu objeto, posicionada em 2D sobre o canvas (ADR 0007) |
+| Painel lateral com resumo + link para a página completa (recomendação original) | A cena continua visível; a página completa tem URL própria, indexável e compartilhável, e funciona sem 3D | Resumo e página completa precisam ser coerentes (garantido pela fonte única de dados) |
 | Navegação entre páginas com canvas persistido (View Transitions + `transition:persist`) | URLs reais em toda a navegação | Persistir o contexto WebGL entre páginas é mais frágil; risco de recarregar a cena |
 | Todo o conteúdo em sobreposições de uma SPA | Transições contínuas | Conteúdo depende de JavaScript; links diretos e indexação mais fracos |
 
@@ -196,6 +201,8 @@ A cena começará simples. Texturas, iluminação, animações e efeitos serão 
 ```ts
 interface Experience {
   goTo(id: HotspotId): Promise<void>;      // move a câmera ao ponto de vista
+  showOverview(): Promise<void>;            // volta à vista geral (ADR 0006)
+  start(): void;                            // inicia a chegada, chamado pela interface ao fim do carregamento (ADR 0006 e 0007)
   skipArrival(): void;                      // botão "Pular"
   setQuality(profile: QualityProfile): void;
   pause(): void;                            // aba oculta, vídeo aberto
@@ -206,6 +213,7 @@ interface Experience {
 
 // Eventos: 'progress', 'ready', 'arrival:done', 'hotspot:hover',
 //          'hotspot:select', 'quality:downgrade', 'error'
+// BootOptions (ADR 0006): quality, reducedMotion, hotspotButtons, screens, onProgress, debug
 ```
 
 **Fonte única dos pontos interativos:**
@@ -222,16 +230,16 @@ export const hotspots = [
 
 **Fluxo de carregamento:**
 
-1. O HTML entrega identificação, menu e os botões “Entrar no campo” e “Ver projetos”. O LCP é um elemento HTML, nunca o canvas.
+1. O HTML entrega identificação, menu e o link “Ver projetos”; a home é imersiva (ADR 0006) e a identificação fica sobre a tela de carregamento. O LCP é um elemento HTML, nunca o canvas. Durante a cena, essas informações aparecem no próprio campo e o HTML continua disponível para leitores de tela e para o teclado (ADR 0007).
 2. A detecção de capacidade (WebGL2, `navigator.connection.saveData`, `deviceMemory`, `prefers-reduced-motion`) escolhe o perfil de qualidade.
-3. Em aparelhos capazes e sem economia de dados, o código 3D é pré-carregado em `requestIdleCallback`; nos demais, só ao clicar em “Entrar no campo”.
-4. O progresso exibido é real, baseado no `LoadingManager` do Three.js.
+3. Em aparelhos capazes, sem economia de dados e sem modo leve, o código 3D começa a carregar ao abrir a home (ADR 0006); nos demais, só ao clicar em “Entrar no campo”.
+4. O progresso exibido é real: etapas concluídas (código da cena, campo montado, materiais compilados, primeiro quadro) e, quando houver modelos, o `LoadingManager` do Three.js. Ao concluir, a interface mostra o fechamento da animação e chama `start()` (ADR 0007).
 5. Falha, tempo esgotado ou ausência de WebGL levam à apresentação alternativa, sem bloquear o menu.
 
 ### 3.5 Estados da experiência
 
 ```text
-entrada ──"Entrar"──► carregando ──ok──► chegada ──fim ou "Pular"──► explorando ◄──► foco(hotspot) ──► painel
+entrada ──"Entrar"──► carregando ──ok + fechamento da animação──► chegada ──fim ou "Pular"──► explorando ◄──► foco(hotspot) ──► painel
    │                      │                                              ▲                              │
    │                      └──erro / sem WebGL──► alternativa             └──────────── fechar ──────────┘
    └──"Ver projetos"──► páginas HTML
@@ -240,6 +248,7 @@ Qualquer estado da cena ──aba oculta ou vídeo aberto──► pausado ─�
 ```
 
 - Com movimento reduzido, a chegada vira um corte com esmaecimento curto, e as transições de câmera ficam instantâneas.
+- Na home imersiva (ADR 0006), “entrada” é a tela de carregamento e “foco” mostra a tela do objeto no cenário; o estado “painel” fica reservado. A órbita limitada vale só em “explorando”, para a tela focada ficar de frente para a câmera (ADR 0007).
 - Implementação: máquina de estados própria e tipada, com poucas dezenas de linhas e testada com Vitest. **Alternativa:** XState, mais robusta e com visualizador, mas com mais peso e aprendizado do que o fluxo exige.
 
 ### 3.6 Perfis de qualidade e apresentação alternativa
@@ -473,6 +482,8 @@ As etapas 0 e 1 podem correr em paralelo: a Etapa 0 é técnica e a Etapa 1 é e
 
 **Validação:** confirmar se a identidade parece pessoal e se o conteúdo representa corretamente a trajetória profissional.
 
+- [x] Base inicial e composição do campo aprovadas por Ruan; Etapa 1 concluída com complementação dos projetos nas Etapas 3 e 5, conforme ADR 0005.
+
 ### Etapa 2 — Campo navegável simples
 
 **Trabalho:** construir campo com formas básicas, chegada curta, câmera e pontos interativos provisórios.
@@ -482,6 +493,16 @@ As etapas 0 e 1 podem correr em paralelo: a Etapa 0 é técnica e a Etapa 1 é e
 **Ruan providencia:** avaliação da sensação de entrada, enquadramento e exploração.
 
 **Tarefas técnicas:** blockout com primitivas (campo, alambrado, placar, banco, gol e uma cápsula no lugar do personagem); timeline GSAP da chegada com botão “Pular”; pontos de vista por hotspot; botões HTML projetados sobre a cena; perfis de qualidade; primeira medição nos aparelhos de referência para revisar os orçamentos da seção 3.11.
+
+**Revisão aprovada em 07/11/2026:** aproximar a câmera do gramado, escurecer o verde e aumentar a distância entre dois gols. Acrescentar, atrás de um gol, entrada com cadeiras, quiosque de bebidas (janela frontal e porta lateral), depósito de ferramentas/bolas e banheiro ao lado; futebol de sabão no trajeto e pula-pula pequeno mais próximo do campo. Construir e revisar esses objetos em ciclos de implementação, validação, mapeamento de problemas e melhoria, conforme ADR 0004 e procedimento do harness, antes de apresentar a versão para avaliação.
+
+**Revisão aprovada em 07/11/2026 (ADR 0006):** home em tela cheia com carregamento “bola rumo ao gol” e “Entrar em campo”; telas no cenário (telão do placar, quadro tático, placa do personagem e telão do gol) com o resumo de cada página; extensões do contrato registradas no ADR.
+
+**Revisão aprovada em 08/11/2026 (ADR 0007):** campo noturno em diorama, refletores acendendo na chegada, entrada automática, placas de LED com a identificação, cartões acesos nas telas, marcadores com pictograma e destaque no objeto, “Voltar ao campo” dentro das telas e quatro alternativas de carregamento para escolha de Ruan.
+
+**Revisão aprovada em 08/11/2026 (ADR 0008):** carregamento único com a bola quicando, chutada para longe no fechamento; na chegada, a câmera acompanha a bola que entra no gol de “O pênalti” e sobe para a vista geral. As quatro alternativas do ADR 0007 saem. A bola quica por pelo menos 5 s antes do chute.
+
+- [x] Protótipo aprovado por Ruan; Etapa 2 concluída localmente em 08/11/2026. Medição nos aparelhos de referência, prévia externa e CI remota passam a ser pré-requisito da validação da Etapa 3, conforme ADR 0009.
 
 **Validação:** testar duração da chegada, clareza das interações e adequação da câmera. Encurtar a entrada, restringir a câmera ou reposicionar elementos conforme os resultados.
 
@@ -493,7 +514,7 @@ As etapas 0 e 1 podem correr em paralelo: a Etapa 0 é técnica e a Etapa 1 é e
 
 **Ruan providencia:** material do projeto escolhido; preferencialmente Sírius, se disponível para apresentação.
 
-**Tarefas técnicas:** `CaseStudyLayout`; componente de diagrama em SVG; blocos de requisição e resposta com Shiki; painel lateral ligado ao hotspot do placar, com link para a página completa.
+**Tarefas técnicas:** `CaseStudyLayout`; componente de diagrama em SVG; blocos de requisição e resposta com Shiki; conteúdo do caso no telão do placar (ADR 0006), com link para a página completa.
 
 **Validação:** conferir leitura, profundidade técnica e transição entre cena e conteúdo antes de replicar o formato.
 

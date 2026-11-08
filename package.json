@@ -16,11 +16,13 @@
     "format": "prettier --write .",
     "test": "vitest run",
     "test:e2e": "playwright test",
-    "test:performance": "lhci autorun"
+    "test:performance": "lhci autorun",
+    "capture": "playwright test -c playwright.capture.config.ts"
   },
   "dependencies": {
     "@astrojs/sitemap": "latest",
     "astro": "latest",
+    "gsap": "^3.15.1",
     "three": "latest"
   },
   "devDependencies": {

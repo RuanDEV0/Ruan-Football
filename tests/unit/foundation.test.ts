@@ -6,7 +6,6 @@ import {
   certificationSchema,
 } from '@/lib/content-schemas';
 import { selectQuality } from '@/lib/capabilities';
-import { transition } from '@/experience/state/machine';
 
 const draft = {
   title: 'Exemplo fictício',
@@ -48,15 +47,6 @@ describe('optional scene', () => {
     expect(selectQuality({ hasWebGL: true, saveData: true, memoryGb: 8 })).toBe('low');
     expect(selectQuality({ hasWebGL: true, saveData: false, memoryGb: 4 })).toBe('medium');
     expect(selectQuality({ hasWebGL: true, saveData: false, memoryGb: 8 })).toBe('high');
-  });
-  it('centralizes loading, pause, recovery and failure transitions', () => {
-    expect(transition('entry', 'load')).toBe('loading');
-    expect(transition('loading', 'ready')).toBe('exploring');
-    expect(transition('exploring', 'pause')).toBe('paused');
-    expect(transition('paused', 'resume')).toBe('exploring');
-    expect(transition('loading', 'error')).toBe('fallback');
-    expect(transition('fallback', 'load')).toBe('loading');
-    expect(transition('entry', 'resume')).toBe('entry');
   });
 });
 

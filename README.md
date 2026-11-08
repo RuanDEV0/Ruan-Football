@@ -30,24 +30,32 @@ As regras de LFS em `.gitattributes` cobrem arquivos de produção; antes de adi
 
 ## Comandos
 
-| Comando                    | Uso                                            |
-| -------------------------- | ---------------------------------------------- |
-| `pnpm dev`                 | Desenvolvimento                                |
-| `pnpm check`               | Astro e TypeScript estrito                     |
-| `pnpm lint`                | ESLint, acessibilidade e fronteiras de import  |
-| `pnpm format`              | Prettier                                       |
-| `pnpm test`                | Testes de unidade                              |
-| `pnpm build`               | HTML estático em `dist/`                       |
-| `pnpm preview`             | Prévia do build                                |
-| `pnpm test:e2e`            | Chromium, Firefox, WebKit e celular emulado    |
-| `pnpm test:performance`    | Lighthouse local, sem upload                   |
-| `scripts/verify.sh`        | Harness, tipos, lint, unidade e build          |
-| `scripts/verify.sh --full` | Inclui navegador e Lighthouse                  |
-| `scripts/check-assets.sh`  | Origem das referências e originais fora do Git |
+| Comando                    | Uso                                                         |
+| -------------------------- | ----------------------------------------------------------- |
+| `pnpm dev`                 | Desenvolvimento                                             |
+| `pnpm check`               | Astro e TypeScript estrito                                  |
+| `pnpm lint`                | ESLint, acessibilidade e fronteiras de import               |
+| `pnpm format`              | Prettier                                                    |
+| `pnpm test`                | Testes de unidade                                           |
+| `pnpm build`               | HTML estático em `dist/`                                    |
+| `pnpm preview`             | Prévia do build                                             |
+| `pnpm test:e2e`            | Chromium, Firefox, WebKit e celular emulado                 |
+| `pnpm test:performance`    | Lighthouse local, sem upload                                |
+| `pnpm capture`             | Capturas da cena para o ciclo visual (`.captures/`)         |
+| `scripts/verify.sh`        | Harness, tipos, lint, unidade, build e orçamentos de bundle |
+| `scripts/verify.sh --full` | Inclui navegador e Lighthouse                               |
+| `scripts/check-assets.sh`  | Origem das referências e originais fora do Git              |
+| `scripts/check-budgets.sh` | JS inicial ≤ 50 KB e cena ≤ 250 KB, em gzip                 |
 
-O Playwright inicia uma prévia isolada na porta 4321; encerre qualquer prévia nessa porta antes da execução. O teste do ciclo de GPU roda no Chromium com renderização por software; todos os motores verificam navegação, axe, modo leve e falha de WebGL. Redimensionamento e movimento reduzido são exercitados nos testes; aparelhos reais continuam necessários.
+O Playwright inicia uma prévia isolada na porta 4321, ou na porta de `PREVIEW_PORT`, por exemplo `PREVIEW_PORT=4330 scripts/verify.sh --full`, quando a 4321 está com uma prévia em avaliação. Os testes da cena (`tests/e2e/scene-*.spec.ts`) rodam no Chromium de computador e no Chromium com celular emulado e toque, ambos com renderização por software; todos os motores verificam navegação, axe, modo leve, planta ilustrada e falha de WebGL. Redimensionamento e movimento reduzido são exercitados nos testes; aparelhos reais continuam necessários.
 
-Os comandos de otimização de modelos e vídeo serão acrescentados junto dos pipelines das respectivas etapas; esta base ainda não contém esses materiais. GSAP entra com a animação de chegada, na Etapa 2.
+Os comandos de otimização de modelos e vídeo serão acrescentados junto dos pipelines das respectivas etapas; esta base ainda não contém esses materiais. O GSAP, previsto no ADR 0001, anima a chegada e as transições de câmera da Etapa 2.
+
+A home é imersiva (ADRs 0006 a 0008). Abre na tela de carregamento, que avança por etapas reais, e entra sozinha no campo noturno, onde os refletores acendem durante a chegada. Nome, título e cidade aparecem em placas de LED no campo. Cada ponto é um marcador que acende o objeto e mostra o conteúdo numa tela do cenário, com link para a página completa e “Voltar ao campo”. No carregamento, a bola quica e é chutada para dentro do campo; na chegada, a câmera a acompanha até o gol (ADR 0008). Sem WebGL, sem JavaScript ou no modo leve, a planta ilustrada oferece os mesmos pontos como links.
+
+Para medir a cena num aparelho real, abra a prévia com `?debug` (por exemplo, `/?debug`) e entre no campo: a cena passa a renderizar continuamente e mostra FPS médio a cada 2 s, perfil, pixelRatio, chamadas de desenho e triângulos. O modo é carregado à parte e não afeta visitas normais.
+
+`scripts/verify.sh` ativa sozinho, pelo nvm, a versão do `.nvmrc` quando ela está instalada; assim o hook Stop e outros shells sem `nvm use` não falham por engano.
 
 ## Estrutura e convenções
 
@@ -82,3 +90,9 @@ A prévia inclui `noindex, nofollow` em metadados e cabeçalhos, além de `robot
 ## Licenças
 
 Código: [MIT](LICENSE). Textos, imagens, modelos, personagem e vídeo: [todos os direitos reservados](LICENSE-CONTENT.md). Dependências mantêm suas próprias licenças.
+
+## Processos temporários da implementação
+
+Os agentes registram servidores e outros processos persistentes com `scripts/processes.sh start --cycle ID -- COMANDO`. Após a validação explícita de Ruan, usam `approve --cycle ID` e `close --cycle ID`; no Claude Code, o hook Stop também fecha ciclos já marcados como aprovados. A prévia permanece aberta durante a avaliação.
+
+O gerenciador requer Linux e `setsid` (util-linux), sem peso no bundle. A alternativa é identificar e parar manualmente cada processo da ferramenta; o registro reduz o risco de atingir outro trabalho. Processos devem permanecer na sessão criada pelo gerenciador, sem modo daemon. Limites e comandos completos em `docs/ai/procedures/close-implementation.md`.

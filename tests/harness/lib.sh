@@ -62,3 +62,25 @@ hook_input() {
   jq -cn --arg s "$1" --arg f "${2:-}" --argjson a "${3:-false}" \
     '{session_id: $s, tool_input: {file_path: $f}, stop_hook_active: $a}'
 }
+
+fake_node() {
+  mkdir -p "$TMP/bin"
+  printf '#!/usr/bin/env bash\necho %s\n' "$1" > "$TMP/bin/node"
+  chmod +x "$TMP/bin/node"
+}
+
+# nvm de mentira: `nvm use VERSAO` coloca no PATH um node que responde a versão pedida, se instalada.
+fake_nvm() {
+  local installed=$1
+  mkdir -p "$TMP/nvm/versions/$installed"
+  printf '#!/usr/bin/env bash\necho v%s\n' "$installed" > "$TMP/nvm/versions/$installed/node"
+  chmod +x "$TMP/nvm/versions/$installed/node"
+  cat > "$TMP/nvm/nvm.sh" <<'SH'
+nvm() {
+  [ "$1" = use ] || return 2
+  local dir="$NVM_DIR/versions/${2#v}"
+  [ -x "$dir/node" ] || { echo "N/A: version \"$2\" is not yet installed." >&2; return 3; }
+  PATH="$dir:$PATH"
+}
+SH
+}

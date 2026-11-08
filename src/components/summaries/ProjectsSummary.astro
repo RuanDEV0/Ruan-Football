@@ -1,0 +1,16 @@
+---
+// Resumo compartilhado por /projetos e pelo telão do placar (ADR 0006).
+import { getCollection } from 'astro:content';
+import { isPublishable } from '@/lib/publication';
+const projects = await getCollection('projetos', isPublishable);
+---
+
+{projects.length ? (
+  <ul>
+    {projects.map((project) => (
+      <li>{project.data.title}</li>
+    ))}
+  </ul>
+) : (
+  <p>Os estudos de caso estão em preparação.</p>
+)}

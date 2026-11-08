@@ -13,7 +13,9 @@ module.exports = {
       assertions: {
         'largest-contentful-paint': ['error', { maxNumericValue: 2500 }],
         'cumulative-layout-shift': ['error', { maxNumericValue: 0.1 }],
-        'resource-summary:script:size': ['error', { maxNumericValue: 51200 }],
+        // Home imersiva (ADR 0006): a cena carrega na abertura, então soma 50 KB iniciais + 250 KB
+        // de cena (plano 3.11). Os 50 KB sem a cena continuam garantidos por scripts/check-budgets.sh.
+        'resource-summary:script:size': ['error', { maxNumericValue: 307200 }],
       },
     },
   },

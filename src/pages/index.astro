@@ -1,31 +1,100 @@
 ---
 import BaseLayout from '@/layouts/BaseLayout.astro';
+import FieldIllustration from '@/components/FieldIllustration.astro';
+import HotspotIcon from '@/components/HotspotIcon.astro';
+import Loader from '@/components/Loader.astro';
+import SceneScreen from '@/components/SceneScreen.astro';
+import AboutSummary from '@/components/summaries/AboutSummary.astro';
+import ContactLinks from '@/components/summaries/ContactLinks.astro';
+import ExperienceSummary from '@/components/summaries/ExperienceSummary.astro';
+import PenaltySummary from '@/components/summaries/PenaltySummary.astro';
+import ProjectsSummary from '@/components/summaries/ProjectsSummary.astro';
+import { hotspots } from '@/data/hotspots';
 import { profile } from '@/data/profile';
 ---
 
-<BaseLayout title="Início" description={profile.title}>
-  <p class="eyebrow">{profile.location} / Portfólio em construção</p>
-  <h1>{profile.name}</h1>
-  <p>{profile.title}.</p>
-  <p class="muted">Explore o conteúdo pelo menu. O campo interativo está em construção.</p>
-  <div class="actions">
-    <a class="button" href="/projetos">
-      Ver projetos
-    </a>
-    <button type="button" data-enter>
-      Entrar no campo
-    </button>
-    <button type="button" data-light aria-pressed="false">
-      Usar modo leve
-    </button>
+<BaseLayout title="Início" description={profile.title} immersive>
+  <script is:inline>
+    // Decide antes de o palco ser pintado se a cena carrega sozinha (ADR 0006), sem salto de layout.
+    const root = document.documentElement;
+    try {
+      const light = localStorage.getItem('light-mode') === 'true';
+      const saveData = Boolean(navigator.connection && navigator.connection.saveData);
+      const gl = document.createElement('canvas').getContext('webgl2');
+      if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (!light && !saveData && gl) root.dataset.sceneAuto = '';
+    } catch {
+      /* Sem armazenamento ou WebGL: a planta ilustrada continua como caminho principal. */
+    }
+  </script>
+  <div class="stage" data-stage data-mode="intro">
+    <div
+      class="scene"
+      data-scene
+      data-mode="illustration"
+      data-view="overview"
+      role="region"
+      aria-label="Campo society provisório"
+    >
+      <FieldIllustration />
+      <div class="scene-hotspots" data-hotspot-layer hidden data-arriving>
+        {hotspots.map(({ id, label }) => (
+          <button type="button" class="scene-hotspot" data-hotspot={id}>
+            <span class="scene-hotspot__icon">
+              <HotspotIcon id={id} />
+            </span>
+            <span class="scene-hotspot__label">{label}</span>
+          </button>
+        ))}
+      </div>
+      <SceneScreen id="scoreboard" kind="Telão do placar">
+        <ProjectsSummary />
+      </SceneScreen>
+      <SceneScreen id="bench" kind="Quadro tático">
+        <ExperienceSummary />
+      </SceneScreen>
+      <SceneScreen id="character" kind="Apresentação">
+        <AboutSummary />
+        <ContactLinks />
+      </SceneScreen>
+      <SceneScreen id="goal" kind="Telão do gol">
+        <PenaltySummary />
+      </SceneScreen>
+      <div class="scene-controls">
+        <button type="button" class="scene-controls__light" data-light aria-pressed="false" hidden>
+          Usar modo leve
+        </button>
+        <button type="button" data-skip hidden>
+          Pular chegada
+        </button>
+      </div>
+    </div>
+    <p class="visually-hidden" role="status" data-status>
+      O conteúdo está disponível pela planta do campo e pelo menu, sem precisar da cena.
+    </p>
+    <section class="stage-intro" data-intro aria-labelledby="home-title">
+      <p class="eyebrow">{profile.location} / Portfólio em construção</p>
+      <h1 id="home-title">{profile.name}</h1>
+      <p class="stage-intro__title">{profile.title}.</p>
+      <Loader />
+      <div class="actions">
+        <button type="button" class="button--primary" data-enter hidden>
+          Entrar no campo
+        </button>
+        <a class="button" href="/projetos">
+          Ver projetos
+        </a>
+      </div>
+      <p class="muted" data-status-text>
+        O conteúdo está disponível pela planta do campo e pelo menu, sem precisar da cena.
+      </p>
+      {import.meta.env.DEV && (
+        <p>
+          <a href="/revisao">Revisar conteúdo da Etapa 1</a>
+        </p>
+      )}
+    </section>
   </div>
-  <p role="status" data-status>
-    O conteúdo está disponível pelo menu, sem precisar da cena.
-  </p>
-  <div class="scene" data-scene role="region" aria-label="Área da cena de teste"></div>
-  <noscript>
-    <p>A cena opcional precisa de JavaScript. Todas as páginas continuam disponíveis pelo menu.</p>
-  </noscript>
 </BaseLayout>
 <script>
   import '@/ui/experience';

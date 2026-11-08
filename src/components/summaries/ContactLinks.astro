@@ -1,0 +1,22 @@
+---
+// Contatos confirmados por Ruan; compartilhados por /contato e pela placa do personagem.
+import { profile } from '@/data/profile';
+---
+
+<ul class="contact-links">
+  <li>
+    <a class="button" href={`mailto:${profile.email}`}>
+      E-mail
+    </a>
+  </li>
+  <li>
+    <a class="button" href={profile.linkedin}>
+      LinkedIn
+    </a>
+  </li>
+  <li>
+    <a class="button" href={profile.github}>
+      GitHub
+    </a>
+  </li>
+</ul>

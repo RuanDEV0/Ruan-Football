@@ -1,0 +1,181 @@
+---
+// Carregamento temático da home (ADR 0008): a bola quica enquanto as etapas reais de
+// src/ui/loading.ts avançam e, no fechamento, é chutada para longe; a cena a recebe na chegada.
+---
+
+<div class="loader" data-loader style="--progress: 0">
+  <div
+    class="loader__stage"
+    role="progressbar"
+    aria-label="Carregamento do campo"
+    aria-valuemin="0"
+    aria-valuemax="100"
+    aria-valuenow="0"
+    data-progressbar
+  >
+    <div class="loader-bounce" aria-hidden="true">
+      <span class="loader-bounce__shadow"></span>
+      <span class="loader-bounce__ball"></span>
+      <span class="loader-bounce__turf">
+        <span class="loader-bounce__progress"></span>
+      </span>
+    </div>
+  </div>
+  <p class="loader__label">
+    <span data-loader-step>Baixando o campo…</span>
+    <span class="loader__percent" data-loader-percent>
+      0%
+    </span>
+  </p>
+</div>
+
+<style>
+  /* Exibido pelo CSS da home desde a primeira pintura, para não haver salto de layout (immersive.css). */
+  .loader {
+    --loader-height: 6.5rem;
+    --ball-size: 1.75rem;
+    --bounce-height: 3rem;
+    width: min(100%, 26rem);
+  }
+  .loader__stage {
+    height: var(--loader-height);
+  }
+  .loader__label {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    margin-block: var(--space-1) 0;
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+  }
+  .loader__percent {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* A faixa de gramado é a barra de progresso; a bola quica no centro dela. */
+  .loader-bounce {
+    position: relative;
+    height: 100%;
+  }
+  .loader-bounce__turf {
+    position: absolute;
+    inset: auto 0 0;
+    height: 0.75rem;
+    overflow: hidden;
+    border: var(--border) solid var(--color-field-line);
+    border-radius: var(--radius);
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-field-turf) 0 2rem,
+      var(--color-field-ground) 2rem 4rem
+    );
+  }
+  .loader-bounce__progress {
+    position: absolute;
+    inset: 0;
+    background: var(--color-focus);
+    opacity: 0.85;
+    transform-origin: left;
+    scale: var(--progress) 1;
+    transition: scale var(--duration-progress) ease-out;
+  }
+  .loader-bounce__ball,
+  .loader-bounce__shadow {
+    position: absolute;
+    left: calc(50% - var(--ball-size) / 2);
+    width: var(--ball-size);
+  }
+  .loader-bounce__ball {
+    bottom: 0.75rem;
+    height: var(--ball-size);
+    border-radius: 50%;
+    background:
+      radial-gradient(circle at 50% 50%, var(--color-background) 0 22%, transparent 23%),
+      radial-gradient(circle at 18% 30%, var(--color-background) 0 12%, transparent 13%),
+      radial-gradient(circle at 82% 30%, var(--color-background) 0 12%, transparent 13%),
+      radial-gradient(circle at 30% 85%, var(--color-background) 0 12%, transparent 13%),
+      radial-gradient(circle at 70% 85%, var(--color-background) 0 12%, transparent 13%),
+      var(--color-field-line);
+    transform-origin: 50% 100%;
+  }
+  .loader-bounce__shadow {
+    bottom: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: var(--shadow-vignette);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .loader-bounce__ball {
+      animation: ball-bounce var(--duration-bounce) infinite;
+    }
+    .loader-bounce__shadow {
+      animation: shadow-bounce var(--duration-bounce) infinite;
+    }
+    /* Fechamento: o chute leva a bola para longe, rumo ao campo que aparece em seguida. */
+    [data-complete] .loader-bounce__ball {
+      animation: ball-kick var(--duration-kick) ease-in forwards;
+    }
+    [data-complete] .loader-bounce__shadow {
+      animation: shadow-kick var(--duration-kick) ease-in forwards;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .loader * {
+      transition: none !important;
+    }
+  }
+  @keyframes ball-bounce {
+    0%,
+    100% {
+      translate: 0 0;
+      scale: 1.12 0.88;
+      animation-timing-function: ease-out;
+    }
+    12% {
+      scale: 1;
+    }
+    50% {
+      translate: 0 calc(var(--bounce-height) * -1);
+      rotate: 180deg;
+      animation-timing-function: ease-in;
+    }
+    100% {
+      rotate: 360deg;
+    }
+  }
+  @keyframes shadow-bounce {
+    0%,
+    100% {
+      scale: 1;
+      opacity: 1;
+      animation-timing-function: ease-out;
+    }
+    50% {
+      scale: 0.45;
+      opacity: 0.4;
+      animation-timing-function: ease-in;
+    }
+  }
+  @keyframes ball-kick {
+    0% {
+      translate: 0 0;
+      scale: 1.12 0.88;
+    }
+    15% {
+      translate: 0 0;
+      scale: 1;
+    }
+    100% {
+      translate: 4rem calc(var(--bounce-height) * -1.6);
+      scale: 0.12;
+      rotate: 720deg;
+      opacity: 0;
+    }
+  }
+  @keyframes shadow-kick {
+    to {
+      scale: 0;
+      opacity: 0;
+    }
+  }
+</style>

@@ -1,18 +1,27 @@
 ---
 import { navigation } from '@/data/navigation';
+interface Props {
+  /** Na home imersiva o menu fica atrás de um botão nativo, sobre a cena. */
+  collapsible?: boolean;
+}
+const { collapsible = false } = Astro.props;
+const Wrapper = collapsible ? 'details' : 'div';
 ---
 
-<nav aria-label="Principal">
-  <ul>
-    {navigation.map(({ label, route }) => (
-      <li>
-        <a
-          href={route}
-          aria-current={Astro.url.pathname.replace(/\/$/, '') === route ? 'page' : undefined}
-        >
-          {label}
-        </a>
-      </li>
-    ))}
-  </ul>
-</nav>
+<Wrapper class:list={['menu', { 'menu--collapsible': collapsible }]}>
+  {collapsible && <summary>Menu</summary>}
+  <nav aria-label="Principal">
+    <ul>
+      {navigation.map(({ label, route }) => (
+        <li>
+          <a
+            href={route}
+            aria-current={Astro.url.pathname.replace(/\/$/, '') === route ? 'page' : undefined}
+          >
+            {label}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </nav>
+</Wrapper>

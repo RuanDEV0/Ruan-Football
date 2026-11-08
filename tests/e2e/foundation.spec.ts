@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 import { profile } from '@/data/profile';
 import { navigation } from '@/data/navigation';
+import { hotspots } from '@/data/hotspots';
 
 test('static pages remain accessible without JavaScript', async ({ browser, baseURL }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
@@ -39,7 +40,13 @@ test('keyboard reaches the skip link and permanent menu', async ({ page }) => {
   await expect(page.getByRole('link', { name: 'Pular para o conteúdo' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('main')).toBeFocused();
-  await page.getByRole('link', { name: 'Projetos', exact: true }).first().focus();
+  const menu = page.getByText('Menu', { exact: true });
+  await menu.focus();
+  await page.keyboard.press('Enter');
+  const projects = page
+    .getByRole('navigation', { name: 'Principal' })
+    .getByRole('link', { name: 'Projetos', exact: true });
+  await projects.focus();
   await page.keyboard.press('Enter');
   await expect(page).toHaveURL('/projetos');
 });
@@ -49,10 +56,33 @@ test('WebGL failure preserves navigation and announces the alternative', async (
     HTMLCanvasElement.prototype.getContext = () => null;
   });
   await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(profile.name);
   await page.getByRole('button', { name: 'Entrar no campo' }).click();
   await expect(page.getByRole('status')).toContainText('apresentação leve');
   await expect(page.getByRole('link', { name: 'Ver projetos' })).toBeVisible();
   await expect(page.locator('canvas')).toHaveCount(0);
+  await expect(page.getByTestId('field-illustration')).toBeVisible();
+});
+
+test('the illustrated field offers the same points as links without JavaScript', async ({
+  browser,
+  baseURL,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false, baseURL });
+  const page = await context.newPage();
+  await page.goto('/');
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(profile.name);
+  await expect(page.getByRole('button', { name: 'Entrar no campo' })).toBeHidden();
+  await page.getByText('Menu', { exact: true }).click();
+  await expect(page.getByRole('navigation', { name: 'Principal' })).toBeVisible();
+  const illustration = page.getByTestId('field-illustration');
+  await expect(illustration).toBeVisible();
+  for (const { label, route } of hotspots)
+    await expect(illustration.getByRole('link', { name: label, exact: true })).toHaveAttribute(
+      'href',
+      route,
+    );
+  await context.close();
 });
 
 test('light mode persists and reduced motion is honored', async ({ page }) => {
@@ -65,6 +95,7 @@ test('light mode persists and reduced motion is honored', async ({ page }) => {
     'true',
   );
   await expect(page.locator('canvas')).toHaveCount(0);
+  await expect(page.getByTestId('field-illustration')).toBeVisible();
 });
 
 test('confirmed contacts and introduction are available without JavaScript', async ({

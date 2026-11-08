@@ -121,12 +121,6 @@ test_fixture_preserves_shellcheck_source_resolution() {
   assert_file "$TMP/repo/.shellcheckrc"
 }
 
-fake_node() {
-  mkdir -p "$TMP/bin"
-  printf '#!/usr/bin/env bash\necho %s\n' "$1" > "$TMP/bin/node"
-  chmod +x "$TMP/bin/node"
-}
-
 fake_pnpm_logging() {
   mkdir -p "$TMP/bin"
   cat > "$TMP/bin/pnpm" <<'SH'
@@ -144,7 +138,7 @@ test_fails_early_when_node_differs_from_nvmrc() {
   fake_pnpm_logging
   echo '26.13.0' > "$TMP/repo/.nvmrc"
   echo '{"scripts":{"check":"x","build":"x"}}' > "$TMP/repo/package.json"
-  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  run env PATH="$TMP/bin:$PATH" NVM_DIR="$TMP/sem-nvm" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
   assert_code 1
   assert_contains "FALHOU  versão do Node"
   assert_contains "v22.23.1"
@@ -169,7 +163,7 @@ test_rejects_older_patch_of_same_major() {
   fake_pnpm_logging
   echo '26.13.0' > "$TMP/repo/.nvmrc"
   echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
-  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  run env PATH="$TMP/bin:$PATH" NVM_DIR="$TMP/sem-nvm" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
   assert_code 1
   assert_contains "FALHOU  versão do Node"
 }
@@ -179,9 +173,51 @@ test_files_mode_checks_node_before_linting() {
   fake_node v22.23.1
   echo '26.13.0' > "$TMP/repo/.nvmrc"
   echo '{"scripts":{}}' > "$TMP/repo/package.json"
-  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --files src/pages/index.astro
+  run env PATH="$TMP/bin:$PATH" NVM_DIR="$TMP/sem-nvm" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo" --files src/pages/index.astro
   assert_code 1
   assert_contains "FALHOU  versão do Node"
+}
+
+test_activates_nvmrc_version_through_nvm_when_installed() {
+  setup
+  fake_node v22.23.1
+  fake_nvm 26.13.0
+  fake_pnpm_logging
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" NVM_DIR="$TMP/nvm" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 0
+  assert_contains "ok      versão do Node"
+  assert_contains "ok      pnpm build"
+  grep -qx build "$TMP/bin/pnpm.calls" || fail "pnpm não rodou depois de ativar o Node pelo nvm"
+}
+
+test_reports_install_hint_when_nvm_lacks_the_version() {
+  setup
+  fake_node v22.23.1
+  fake_nvm 24.0.0
+  fake_pnpm_logging
+  echo '26.13.0' > "$TMP/repo/.nvmrc"
+  echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
+  run env PATH="$TMP/bin:$PATH" NVM_DIR="$TMP/nvm" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 1
+  assert_contains "FALHOU  versão do Node"
+  assert_contains "nvm install"
+  assert_no_file "$TMP/bin/pnpm.calls"
+}
+
+test_checks_bundle_budgets_after_a_successful_build() {
+  setup
+  fake_pnpm_logging
+  echo '{"scripts":{"build":"x"}}' > "$TMP/repo/package.json"
+  mkdir -p "$TMP/repo/dist/_astro"
+  printf '<script type="module" src="/_astro/entry.js"></script>' > "$TMP/repo/dist/index.html"
+  head -c 80000 /dev/urandom | base64 -w0 > "$TMP/repo/dist/_astro/entry.js"
+  run env PATH="$TMP/bin:$PATH" "$TMP/repo/scripts/verify.sh" --root "$TMP/repo"
+  assert_code 1
+  assert_contains "ok      pnpm build"
+  assert_contains "FALHOU  orçamentos de bundle"
+  assert_contains "acima do orçamento"
 }
 
 test_skips_browser_and_performance_checks_when_build_fails() {

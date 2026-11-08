@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Runner dos testes do harness, sem dependências além de bash e jq, para rodar igual
+# Runner dos testes do harness: bash e jq; testes de processos usam Linux e setsid, para rodar igual
 # localmente e na CI. Uso: tests/harness/run.sh [filtro]
 set -uo pipefail
 
@@ -53,5 +53,6 @@ for file in "$here"/test-*.sh; do
 done
 
 echo
+[ "$failed" -eq 0 ] || printf 'Falhou: %s\n' "${failures[@]}"
 echo "$passed passaram, $failed falharam."
 [ "$failed" -eq 0 ]

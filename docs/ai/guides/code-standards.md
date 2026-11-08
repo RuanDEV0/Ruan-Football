@@ -31,13 +31,13 @@ Vale para todo código escrito ou alterado por agentes: `src/`, `scripts/`, `tes
 
 **Permitido:**
 
-| Tipo | Quando | Exemplo |
-| --- | --- | --- |
-| Cabeçalho de papel | Apenas em arquivos essenciais para o projeto: pontos de entrada, contratos, fontes únicas de dados, hooks, scripts de verificação, configurações centrais. Uma a três linhas sobre o papel do arquivo, quem depende dele e onde está a decisão | `// Contrato público da cena (plano 3.4). Mudanças exigem ADR.` |
-| Correlação com o projeto | Uma linha cujo motivo vem de fora do código: decisão do plano, ADR, orçamento, regra do `AGENTS.md`, limitação de navegador ou ferramenta | `// Teto de pixelRatio do perfil médio: orçamento do plano 3.11.` |
-| Armadilha | Comportamento não óbvio que levaria alguém a “corrigir” o código e quebrá-lo | `# Não use if ( … ): dentro de uma condição o bash ignora set -e.` |
-| Diretiva de ferramenta | `eslint-disable`, `@ts-expect-error`, `shellcheck disable`, sempre na linha afetada e com o motivo na linha anterior | `// Motivo: tipo do three/examples incompleto.` |
-| `TODO` | Somente no formato `TODO(etapa-N): o que falta e por quê` | `// TODO(etapa-4): trocar a cápsula pelo GLB do personagem.` |
+| Tipo                     | Quando                                                                                                                                                                                                                                         | Exemplo                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Cabeçalho de papel       | Apenas em arquivos essenciais para o projeto: pontos de entrada, contratos, fontes únicas de dados, hooks, scripts de verificação, configurações centrais. Uma a três linhas sobre o papel do arquivo, quem depende dele e onde está a decisão | `// Contrato público da cena (plano 3.4). Mudanças exigem ADR.`    |
+| Correlação com o projeto | Uma linha cujo motivo vem de fora do código: decisão do plano, ADR, orçamento, regra do `AGENTS.md`, limitação de navegador ou ferramenta                                                                                                      | `// Teto de pixelRatio do perfil médio: orçamento do plano 3.11.`  |
+| Armadilha                | Comportamento não óbvio que levaria alguém a “corrigir” o código e quebrá-lo                                                                                                                                                                   | `# Não use if ( … ): dentro de uma condição o bash ignora set -e.` |
+| Diretiva de ferramenta   | `eslint-disable`, `@ts-expect-error`, `shellcheck disable`, sempre na linha afetada e com o motivo na linha anterior                                                                                                                           | `// Motivo: tipo do three/examples incompleto.`                    |
+| `TODO`                   | Somente no formato `TODO(etapa-N): o que falta e por quê`                                                                                                                                                                                      | `// TODO(etapa-4): trocar a cápsula pelo GLB do personagem.`       |
 
 **Proibido:**
 
@@ -59,11 +59,11 @@ Vale para todo código escrito ou alterado por agentes: `src/`, `scripts/`, `tes
 - Alias `@/` para `src/`. Sem caminhos relativos que subam mais de um nível (`../../`).
 - Fronteiras aplicadas pelo ESLint a partir da Etapa 0 (`no-restricted-imports`):
 
-  | Em | Não pode importar |
-  | --- | --- |
-  | `src/experience/**` | `astro:*`, `@/ui/*`, `@/components/*`, `@/layouts/*`, `@/pages/*` |
-  | Fora de `src/experience/` | `three`, `three/*`, `gsap` (exceto pelo `boot()` público) |
-  | `src/content/**`, `src/data/**` | Qualquer módulo de interface ou da cena |
+  | Em                              | Não pode importar                                                 |
+  | ------------------------------- | ----------------------------------------------------------------- |
+  | `src/experience/**`             | `astro:*`, `@/ui/*`, `@/components/*`, `@/layouts/*`, `@/pages/*` |
+  | Fora de `src/experience/`       | `three`, `three/*`, `gsap` (exceto pelo `boot()` público)         |
+  | `src/content/**`, `src/data/**` | Qualquer módulo de interface ou da cena                           |
 
 - Dependência nova: justificar no relatório o problema, o peso e a alternativa sem dependência (`AGENTS.md`, regra 8).
 
@@ -87,14 +87,14 @@ Vale para todo código escrito ou alterado por agentes: `src/`, `scripts/`, `tes
 
 ## Testes
 
-| Tipo de mudança | Teste obrigatório |
-| --- | --- |
-| Lógica pura (estado, perfil, cálculo, dados) | Vitest em `tests/unit/` |
-| Página, componente ou interação | Playwright + axe em `tests/e2e/` |
-| Cena 3D | Vitest da lógica extraída + Playwright dos estados e eventos |
-| Script ou hook | `tests/harness/test-*.sh` |
-| Conteúdo | Schema (`pnpm check`) + `docs/ai/procedures/review-content.md` |
-| Correção de bug | Teste que reproduz o bug antes da correção |
+| Tipo de mudança                              | Teste obrigatório                                              |
+| -------------------------------------------- | -------------------------------------------------------------- |
+| Lógica pura (estado, perfil, cálculo, dados) | Vitest em `tests/unit/`                                        |
+| Página, componente ou interação              | Playwright + axe em `tests/e2e/`                               |
+| Cena 3D                                      | Vitest da lógica extraída + Playwright dos estados e eventos   |
+| Script ou hook                               | `tests/harness/test-*.sh`                                      |
+| Conteúdo                                     | Schema (`pnpm check`) + `docs/ai/procedures/review-content.md` |
+| Correção de bug                              | Teste que reproduz o bug antes da correção                     |
 
 - Testes descrevem comportamento (`test_stop_never_blocks_twice`, `it('drops quality one level after sustained low fps')`), não implementação.
 - Cada teste prepara seus próprios dados; nenhum depende da ordem de execução.

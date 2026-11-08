@@ -1,4 +1,5 @@
 @import './tokens.css';
+@import './immersive.css';
 * {
   box-sizing: border-box;
 }
@@ -105,14 +106,180 @@ button:disabled {
   cursor: progress;
 }
 .scene {
+  position: relative;
   height: var(--size-scene);
   border: var(--border) solid var(--color-line);
   background: var(--color-surface);
   overflow: hidden;
 }
+.scene[data-mode='scene'] [data-illustration] {
+  display: none;
+}
 .scene canvas {
+  position: absolute;
+  inset: 0;
+  z-index: var(--layer-scene);
   display: block;
   max-width: 100%;
+  /* Gestos horizontais ajustam a órbita; a rolagem vertical da página continua livre (guia da cena). */
+  touch-action: pan-y;
+}
+.scene-hotspots {
+  position: absolute;
+  inset: 0;
+  z-index: var(--layer-hotspots);
+  pointer-events: none;
+}
+.scene-hotspots[data-arriving] {
+  visibility: hidden;
+}
+/* Marcadores no campo (ADR 0007): pictograma aceso e nome em letreiro, sem caixa de botão. */
+.scene-hotspot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  gap: var(--space-1);
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-text);
+  font-size: var(--text-small);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: 0.06em;
+  text-align: start;
+  text-transform: uppercase;
+  text-shadow: var(--shadow-text);
+  pointer-events: auto;
+}
+.scene-hotspot:focus-visible {
+  outline: none;
+}
+.scene-hotspot__icon {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: var(--size-touch);
+  height: var(--size-touch);
+  border: calc(var(--border) * 2) solid var(--color-led);
+  border-radius: 50%;
+  background: var(--color-night-glass);
+  box-shadow: 0 0 var(--space-2) var(--color-led-glow);
+  color: var(--color-led);
+  transition:
+    background var(--duration-hover) ease,
+    color var(--duration-hover) ease;
+}
+.scene-hotspot__icon::after {
+  content: '';
+  position: absolute;
+  inset: calc(var(--border) * -2);
+  border: calc(var(--border) * 2) solid var(--color-led);
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .scene-hotspot__icon::after {
+    animation: beacon 2.4s ease-out infinite;
+  }
+}
+@keyframes beacon {
+  0% {
+    opacity: 0.7;
+    scale: 1;
+  }
+  80%,
+  100% {
+    opacity: 0;
+    scale: 1.6;
+  }
+}
+.scene-hotspot__label {
+  max-width: 9rem;
+}
+.scene-hotspot:hover,
+.scene-hotspot[data-hover],
+.scene-hotspot:focus-visible,
+.scene-hotspot[aria-current='true'] {
+  color: var(--color-led);
+}
+.scene-hotspot:hover .scene-hotspot__icon,
+.scene-hotspot[data-hover] .scene-hotspot__icon,
+.scene-hotspot:focus-visible .scene-hotspot__icon,
+.scene-hotspot[aria-current='true'] .scene-hotspot__icon {
+  background: var(--color-led);
+  color: var(--color-night);
+}
+.scene-hotspot:focus-visible .scene-hotspot__icon {
+  outline: calc(var(--border) * 2) solid var(--color-focus);
+  outline-offset: calc(var(--border) * 3);
+}
+.scene-hotspot[data-offscreen] {
+  visibility: hidden;
+}
+.scene-hotspot[data-moving] {
+  visibility: hidden;
+}
+.scene-hotspot::after {
+  content: '';
+  position: absolute;
+  top: var(--leader-y, 100%);
+  left: var(--leader-x, 50%);
+  width: var(--border);
+  height: var(--leader, 0);
+  background: var(--color-led);
+  opacity: 0.7;
+  transform-origin: top;
+  rotate: var(--leader-angle, 0deg);
+  pointer-events: none;
+}
+.scene-controls {
+  position: absolute;
+  inset: auto var(--space-2) var(--space-2);
+  z-index: var(--layer-controls);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-end;
+  gap: var(--space-1);
+  pointer-events: none;
+}
+.scene-controls > * {
+  pointer-events: auto;
+}
+.scene-controls button,
+.scene-controls .button {
+  border-color: var(--color-line);
+  border-radius: calc(var(--size-touch) / 2);
+  background: var(--color-night-glass);
+  font-size: var(--text-small);
+  backdrop-filter: blur(6px);
+}
+.scene-debug {
+  position: absolute;
+  inset: auto auto var(--space-1) var(--space-1);
+  z-index: var(--layer-controls);
+  max-width: min(22rem, calc(100% - var(--space-2)));
+  margin: 0;
+  padding: var(--space-1);
+  background: var(--color-overlay);
+  font-family: var(--font-mono);
+  font-size: var(--text-small);
+  pointer-events: none;
+}
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+[hidden] {
+  display: none !important;
 }
 .skip-link {
   position: absolute;

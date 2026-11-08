@@ -8,6 +8,8 @@
 
 - Antes da aplicação, confere se o Node ativo corresponde ao `.nvmrc`. Com versão errada, falha com a instrução `nvm use` e não roda os comandos `pnpm`, cujo erro seria enganoso.
 - Se `pnpm build` falhar, `test:e2e` e `test:performance` ficam `pulado`: o Lighthouse lê `dist/` e mediria o build anterior.
+- Com Node divergente do `.nvmrc`, ativa a versão pelo nvm se ela estiver instalada; sem ela, falha indicando `nvm install`. Hooks e CI não herdam o `nvm use` do terminal. `scripts/processes.sh start` usa a mesma ativação (`scripts/lib/node.sh`) e avisa quando a versão não está instalada; o supervisor termina junto com o comando.
+- Depois de um build bem-sucedido, `scripts/check-budgets.sh` mede em gzip o JS inicial (scripts das páginas e imports estáticos) e o código da cena (o restante); ultrapassar o orçamento é `FALHOU`.
 
 | Modo                          | Uso                                                                                          |
 | ----------------------------- | -------------------------------------------------------------------------------------------- |
@@ -29,6 +31,8 @@ Novas verificações entram em `scripts/verify.sh`, com teste em `tests/harness/
 | Desempenho                 | Lighthouse CI (na CI)                 | Mudanças que afetam carregamento ou bundle                                                                                           |
 | Documentação para IA       | `scripts/check-ai-docs.sh`            | Mudanças em `AGENTS.md`, `docs/`, `README.md` ou nos adaptadores; inclui referências quebradas em relatórios de etapa, ADRs e README |
 | Assets e referências       | `scripts/check-assets.sh`             | Mudanças em `assets-src/`, `public/` ou `src/`                                                                                       |
+| Orçamentos de bundle       | `scripts/check-budgets.sh`            | Após cada build, dentro de `scripts/verify.sh`                                                                                       |
+| Capturas da cena           | `pnpm capture`                        | Ciclo visual de objetos, câmera e composição; inspeção, não asserção                                                                 |
 | Harness                    | `tests/harness/run.sh` + `shellcheck` | Mudanças em `scripts/`, `.claude/hooks/` ou `tests/harness/`                                                                         |
 
 ## O que testar
@@ -41,11 +45,15 @@ Novas verificações entram em `scripts/verify.sh`, com teste em `tests/harness/
   - Com `prefers-reduced-motion`, não há chegada animada.
   - O vídeo não toca sozinho.
 - **Harness (`tests/harness/`):** cada script e hook tem testes em fixture isolada (`make_fixture`), sem tocar no repositório real. O próprio runner é testado (`test-runner.sh`).
-- **Não teste pixels da cena 3D** com captura de tela automatizada: o resultado é instável. Teste estados e eventos.
+- **Não teste pixels da cena 3D** com captura de tela automatizada: o resultado é instável. Teste estados e eventos, incluindo geometria observável dos botões (dentro da cena, sem sobreposição, 44 px).
+- **Cena no Playwright:** `scene-*.spec.ts` roda no Chromium de computador e no Chromium com celular emulado (toque); os demais motores ficam com navegação, axe, planta ilustrada e falha de WebGL.
+- **Capturas para inspeção:** `pnpm capture` (`playwright.capture.config.ts`) salva imagens em `.captures/`, ignorada pelo Git. Servem ao ciclo visual; não são asserção.
 
 ## Orçamentos (plano, 3.11)
 
 LCP ≤ 2,5 s · CLS ≤ 0,1 · JS inicial sem a cena ≤ 50 KB gzip · código da cena ≤ 250 KB gzip · modelos e texturas ≤ 3 MB · ≤ 100 draw calls · ≤ 150 mil triângulos · 60 FPS no computador e ≥ 30 estáveis no celular · vídeo 1080p ≤ 8 MB.
+
+Com uma prévia aguardando validação na porta 4321, rode o e2e e as capturas em outra porta: `PREVIEW_PORT=4330 scripts/verify.sh --full` ou `PREVIEW_PORT=4330 pnpm capture`. O JS inicial e o código da cena são medidos separadamente por `scripts/check-budgets.sh`. Como a home imersiva carrega a cena na abertura (ADR 0006), o Lighthouse mede a soma dos dois (≤ 307.200 bytes).
 
 Os valores serão revisados após a Etapa 2. Ultrapassou um orçamento: relate o número medido e a causa; não ajuste o limite por conta própria.
 
@@ -58,3 +66,7 @@ A CI em `.github/workflows/ci.yml` instala Node, pnpm e os navegadores, e roda `
 - Liste os comandos executados e os resultados reais.
 - Separe o que foi verificado automaticamente, o que foi verificado manualmente e o que **não** foi verificado (por exemplo: “não testado em iPhone real”).
 - Teste falhando é relatado como falha, com a saída relevante. Não desative, pule ou afrouxe um teste para fazer a CI passar sem autorização de Ruan.
+
+## Encerramento do ciclo
+
+Depois da validação explícita de Ruan, seguir `docs/ai/procedures/close-implementation.md` para encerrar os processos registrados no ciclo e confirmar o resultado. O Stop do agente não equivale à aprovação. Testes do gerenciador usam processos descartáveis em fixtures Linux, incluindo filhos órfãos, isolamento de ciclos, identidade de PID e encerramento forçado.

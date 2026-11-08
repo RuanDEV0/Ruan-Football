@@ -6,6 +6,16 @@
   --color-accent: #ef7066;
   --color-line: #425248;
   --color-focus: #f4ce78;
+  --color-overlay: rgb(16 21 19 / 0.9);
+  --color-field-ground: #263b32;
+  --color-field-turf: #174b2a;
+  --color-field-line: #f2f2e9;
+  --color-field-fence: #9fb0a6;
+  --color-field-wall: #b9b0a0;
+  --color-field-roof: #784f3b;
+  --color-field-blue: #276eaa;
+  --color-field-yellow: #d5ae38;
+  --color-field-red: #b44540;
   --font-body: system-ui, sans-serif;
   --font-mono: ui-monospace, monospace;
   --text-small: 0.875rem;
@@ -20,8 +30,36 @@
   --size-content: 74rem;
   --size-reading: 42rem;
   --size-touch: 2.75rem;
-  --size-scene: 20rem;
+  --size-scene: clamp(30rem, 72vh, 44rem);
   --line-height: 1.6;
   --radius: 0.25rem;
   --border: 1px;
+  --layer-scene: 1;
+  --layer-screens: 2;
+  --layer-hotspots: 3;
+  --layer-intro: 4;
+  --layer-controls: 5;
+  --layer-header: 6;
+  --size-header: 4.5rem;
+  --duration-progress: 400ms;
+  --duration-fade: 600ms;
+  --duration-bounce: 700ms;
+  --duration-kick: 800ms;
+  /* Telas do cenário (ADR 0006): medidas relativas à largura da tela, que a cena escala em 3D. */
+  --screen-text: 4.4cqi;
+  --screen-heading: 8cqi;
+  --screen-kind: 3cqi;
+  --screen-space: 2.5cqi;
+  --screen-touch: 13.6cqi;
+  --color-screen: #0d1410;
+  --color-screen-glow: #f0a63a;
+  /* Noite do campo e LEDs (ADR 0007); a cor da noite acompanha NIGHT_COLOR da cena. */
+  --color-night: #070d12;
+  --color-led: #ffb347;
+  --color-led-glow: rgb(255 179 71 / 0.45);
+  --color-night-glass: rgb(7 13 18 / 0.72);
+  --color-night-sky: #0f1c2b;
+  --shadow-text: 0 1px 3px rgb(0 0 0 / 0.9);
+  --shadow-vignette: rgb(0 0 0 / 0.6);
+  --duration-hover: 160ms;
 }

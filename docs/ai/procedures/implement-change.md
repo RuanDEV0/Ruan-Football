@@ -27,6 +27,19 @@ Roteiro padrão para qualquer código gerado por agente: funcionalidade, correç
 - Remova o que não é usado. Não acrescente funcionalidade nesta fase.
 - Testes continuam verdes após cada mudança.
 
+## 4.1 Ciclo de validação de objetos e cenas 3D
+
+Obrigatório ao criar ou revisar objetos, composição, materiais ou câmera, inclusive no blockout da Etapa 2. Pedido de Ruan registrado em `docs/decisoes/0004-revisao-do-campo-e-ciclo-visual.md`.
+
+1. **Implementar** um incremento com critérios observáveis e testes prévios de comportamento.
+2. **Validar** testes e capturas reais da cena em tela larga e estreita: `pnpm capture` gera em `.captures/` a planta ilustrada, a chegada, a vista geral e cada ponto de vista em 1280 × 900 e 360 × 800 (fora de `test-results/`, que o Playwright limpa). Inspecionar escala, enquadramento, legibilidade, sobreposição, orientação, contato com o solo, acessos, descarte e orçamento de renderização. Um teste verde não aprova a aparência.
+3. **Mapear** no relatório da etapa cada problema: identificador, evidência, impacto, prioridade (bloqueante, relevante ou refinamento), correção proposta e estado (aberto, corrigido ou depende de validação externa). Separar defeitos de melhorias opcionais e de tarefas futuras já planejadas.
+4. **Melhorar** dentro do escopo autorizado. Corrigir os bloqueantes e relevantes que forem reproduzíveis no ambiente; adicionar regressão quando houver comportamento testável. Decisões novas de produto ou ampliação de escopo voltam a Ruan.
+5. **Revalidar** os testes afetados e novas capturas após cada correção. Se surgir outro defeito, voltar ao mapeamento. Rodar `scripts/verify.sh --full` sobre a versão final.
+6. **Apresentar** quando não restarem problemas bloqueantes ou relevantes conhecidos que possam ser corrigidos no escopo e ambiente disponíveis. Listar explicitamente qualquer dependência externa, refinamento remanescente e teste não realizado. Nunca declarar “zero erros” com base só nos testes ou repetir verificações sem mudança ou preocupação concreta.
+
+Se o navegador ou a captura estiver indisponível, registrar a limitação e não declarar validação visual concluída. Aprovação subjetiva e medição no aparelho físico continuam pertencendo à validação de Ruan.
+
 ## 5. Testar o teste
 
 - Introduza um defeito deliberado no código (inverta uma condição, remova uma linha, quebre a fixture) e confirme que algum teste falha. Desfaça o defeito.
@@ -65,3 +78,7 @@ Para mudanças grandes ou fim de etapa, use também o subagente `delivery-review
 - Saída resumida de `scripts/verify.sh`, incluindo o que ficou `pulado` e o motivo.
 - O que não foi verificado e os riscos que restam.
 - Sem commit, push ou PR sem pedido explícito.
+
+## 9. Encerrar após a validação de Ruan
+
+Durante o ciclo, registrar processos persistentes com `scripts/processes.sh start --cycle ID -- COMANDO`. Depois da validação explícita de Ruan, executar `approve` e `close` para o mesmo ciclo, conforme `docs/ai/procedures/close-implementation.md`. No Claude Code, o hook Stop consome a marca de aprovação. Não fechar a prévia antes da avaliação; relatar qualquer processo que não tenha sido encerrado.

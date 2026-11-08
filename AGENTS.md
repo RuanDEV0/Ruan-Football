@@ -14,7 +14,7 @@ Portfólio de Ruan Oliveira (desenvolvimento backend, APIs e aplicações web, B
 
 ## Estado atual
 
-**Etapa 0: concluída com a base local em 07/11/2026** (`docs/decisoes/0003-etapa-0-concluida-localmente.md`). Astro estático, páginas provisórias, schemas, cena de teste, testes e workflow de CI escritos; `scripts/verify.sh --full` passou localmente. Hospedagem, prévia por PR e execução remota da CI foram transferidas para antes da validação da Etapa 2 e dependem de autorização explícita para Git e hospedagem. **Etapa 1 em andamento:** a parte editorial foi iniciada com o material de Ruan: contatos e apresentação aplicados, roteiro e pendências em `docs/conteudo/etapa-1.md`; capturas de frontend serão fornecidas depois. Evidências de código e inspeção do vídeo recebidas em 07/11/2026: `docs/conteudo/evidencias-locais.md` e `docs/conteudo/video-penalti.md`; certificado AWS em rascunho na coleção. Aparência inicial do personagem definida com fotos de Ruan em 07/11/2026: `docs/conteudo/personagem.md` e folha `assets-src/referencias/folha-boneco.html`. Detalhes e pendências da Etapa 0 em `docs/etapa-0-verificacao.md`.
+**Etapa 0: concluída com a base local em 07/11/2026** (`docs/decisoes/0003-etapa-0-concluida-localmente.md`). Astro estático, páginas provisórias, schemas, cena de teste, testes e workflow de CI escritos; `scripts/verify.sh --full` passou localmente. Hospedagem, prévia por PR e execução remota da CI foram transferidas para antes da validação da Etapa 2 e dependem de autorização explícita para Git e hospedagem. **Etapa 1 concluída com a base inicial aprovada em 07/11/2026** (`docs/decisoes/0005-etapa-1-base-editorial-aprovada.md`); complementação dos projetos nas Etapas 3 e 5. Material de Ruan: contatos e apresentação aplicados, roteiro e pendências em `docs/conteudo/etapa-1.md`; capturas de frontend serão fornecidas depois. Evidências de código e inspeção do vídeo recebidas em 07/11/2026: `docs/conteudo/evidencias-locais.md` e `docs/conteudo/video-penalti.md`; certificado AWS em rascunho na coleção. Aparência inicial do personagem definida com fotos de Ruan em 07/11/2026: `docs/conteudo/personagem.md` e folha `assets-src/referencias/folha-boneco.html`. Detalhes e pendências da Etapa 0 em `docs/etapa-0-verificacao.md`. **Etapa 2 concluída localmente em 08/11/2026** (`docs/decisoes/0009-etapa-2-concluida-localmente.md`): campo noturno navegável com chegada da bola chutada ao gol, pontos de vista, marcadores, telas no cenário e quique mínimo de 5 s no carregamento (ADRs 0004 e 0006 a 0008). Medição no Moto G30 e no Vaio FE16 com `?debug`, prévia externa e CI remota passam a ser pré-requisito da validação da Etapa 3, junto com o TBT (I11) e os refinamentos abertos. Ruan confirmou a composição do plano e os aparelhos Moto G30 e Vaio FE16 para avaliação. Entrega e verificações em `docs/etapa-2-verificacao.md`; a base editorial da Etapa 1 foi aprovada, com lacunas preservadas para complementação. Próxima: Etapa 3, primeiro estudo de caso.
 
 Ao concluir uma etapa, atualize esta seção.
 
@@ -27,12 +27,14 @@ Astro (saída estática) · TypeScript `strict` · Three.js (`WebGLRenderer`) ·
 Disponíveis desde já:
 
 ```sh
+scripts/processes.sh --help  # processos do ciclo; fechar após validação de Ruan
 scripts/verify.sh            # verificação única: harness + aplicação (o que existir)
 scripts/verify.sh --full     # inclui e2e e Lighthouse
 scripts/verify.sh --files A B   # só o que os arquivos afetam (usado pelo hook Stop)
 tests/harness/run.sh [filtro]   # testes dos scripts e hooks
 scripts/check-ai-docs.sh     # consistência desta documentação
 scripts/check-assets.sh      # origem das referências, originais fora do Git, marcas
+scripts/check-budgets.sh     # JS inicial e código da cena em gzip (roda após o build)
 ```
 
 Disponíveis na base local (chamados por `scripts/verify.sh`):
@@ -46,6 +48,7 @@ pnpm format           # Prettier
 pnpm test             # Vitest
 pnpm test:e2e         # Playwright + axe
 pnpm build            # build estático em dist/
+pnpm capture          # capturas da cena para o ciclo visual, em .captures/
 ```
 
 Os pipelines `pnpm assets:models` e `pnpm assets:video` ainda serão implementados com os materiais das respectivas etapas.
@@ -98,6 +101,8 @@ Uma tarefa só está pronta quando:
 
 - [ ] Seguiu `docs/ai/procedures/implement-change.md`: teste escrito antes e visto falhando, implementação mínima, melhoria com testes verdes.
 - [ ] `scripts/verify.sh` passa; `scripts/verify.sh --full` se tocou páginas, interface ou cena (teclado e cenário sem WebGL incluídos).
+- [ ] Para objetos e cenas 3D, aplicou o ciclo visual da seção 4.1 de `docs/ai/procedures/implement-change.md`, com problemas mapeados e revalidação das correções.
+- [ ] Após a validação explícita de Ruan, encerrou os processos do ciclo conforme `docs/ai/procedures/close-implementation.md`; enquanto aguarda avaliação, mantém a prévia disponível.
 - [ ] Itens `pulado` foram relatados com o motivo.
 - [ ] Os orçamentos da seção 3.11 do plano não foram ultrapassados, ou a ultrapassagem foi relatada.
 - [ ] Nenhuma regra inviolável foi quebrada; as pendências `[[PENDENTE: …]]` estão listadas.
@@ -109,14 +114,15 @@ Relate falhas como falhas. Não declare algo verificado sem ter executado a veri
 
 Roteiros passo a passo, válidos para qualquer agente:
 
-| Quando                                              | Procedimento                             |
-| --------------------------------------------------- | ---------------------------------------- |
-| Implementar qualquer mudança de código (padrão)     | `docs/ai/procedures/implement-change.md` |
-| Iniciar ou continuar uma etapa do plano             | `docs/ai/procedures/start-stage.md`      |
-| Adicionar ou atualizar um projeto ou estudo de caso | `docs/ai/procedures/add-project.md`      |
-| Revisar textos profissionais antes de publicar      | `docs/ai/procedures/review-content.md`   |
-| Registrar uma decisão técnica                       | `docs/ai/procedures/create-adr.md`       |
-| Verificar uma entrega antes da validação de Ruan    | `docs/ai/procedures/verify-delivery.md`  |
+| Quando                                              | Procedimento                                 |
+| --------------------------------------------------- | -------------------------------------------- |
+| Implementar qualquer mudança de código (padrão)     | `docs/ai/procedures/implement-change.md`     |
+| Iniciar ou continuar uma etapa do plano             | `docs/ai/procedures/start-stage.md`          |
+| Adicionar ou atualizar um projeto ou estudo de caso | `docs/ai/procedures/add-project.md`          |
+| Revisar textos profissionais antes de publicar      | `docs/ai/procedures/review-content.md`       |
+| Registrar uma decisão técnica                       | `docs/ai/procedures/create-adr.md`           |
+| Encerrar processos após a validação de Ruan         | `docs/ai/procedures/close-implementation.md` |
+| Verificar uma entrega antes da validação de Ruan    | `docs/ai/procedures/verify-delivery.md`      |
 
 ## Manutenção desta documentação
 

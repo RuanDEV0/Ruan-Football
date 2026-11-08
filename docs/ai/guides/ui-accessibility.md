@@ -9,6 +9,19 @@
 - HTML semântico: um `h1` por página, hierarquia de títulos sem saltos, `nav`, `main`, `footer`, listas para listas. `lang="pt-BR"`.
 - Componentes Astro são renderizados no build. Use `<script>` de cliente somente para comportamento que precisa de JavaScript, como menu móvel, painel, preferências ou ponte com a cena.
 
+## Home imersiva (ADRs 0006 e 0007)
+
+- A home ocupa a tela com a cena. Nome, título e cidade ficam em HTML sobre a tela de carregamento e são o LCP. Um script inline mínimo decide antes da pintura se a cena carrega sozinha (`data-scene-auto`), para não haver salto de layout.
+- Sem JavaScript, sem WebGL, em falha ou no modo leve, a mesma área mostra a planta ilustrada com os pontos como links. Botões que dependem de JavaScript começam com `hidden`.
+- O menu permanente fica num `details` nativo (“Menu”), que funciona sem JavaScript e por teclado.
+- A região viva (`role="status"`) fica fora da apresentação, que some durante o jogo; a cópia visível do texto não é região viva, para não anunciar duas vezes.
+- O fim do carregamento não move o foco: anuncia na região viva. O primeiro Tab continua sendo “Pular para o conteúdo”.
+- Ao focar um ponto, o foco vai para o título da tela no cenário; `Esc` ou “Voltar ao campo”, dentro da própria tela, voltam e devolvem o foco ao marcador que abriu. “Usar modo leve” fica sempre disponível nos controles da cena.
+- Ao terminar o carregamento, a home entra em campo sozinha depois do fechamento da animação, sem mover o foco. Só quem acionou “Entrar no campo” recebe o foco em “Pular chegada” ou, com movimento reduzido, no primeiro marcador.
+- Durante a cena, a informação fica no campo e o HTML continua no documento: o título da página e os resumos são lidos por leitor de tela, e o cabeçalho com o menu fica fora de vista até receber o foco do teclado.
+- Os marcadores dos pontos são `<button>` com pictograma decorativo (`aria-hidden`) e o rótulo de `hotspots.ts` como nome acessível. Área de toque de 44 px no pictograma; o foco visível contorna o pictograma.
+- O carregamento é a bola quicando de `src/components/Loader.astro` (ADR 0008): a faixa de gramado é a barra de progresso acessível e avança pelas etapas reais. A bola quica por pelo menos 5 s, com “Aquecendo a bola…” se o carregamento terminar antes, e só então é chutada para longe. Os testes avançam o relógio da página com `tests/e2e/field-clock.ts`. Com `prefers-reduced-motion`, a bola fica parada, não há chute nem espera.
+
 ## Menu e painel
 
 - O menu permanente tem Projetos, Experiência, Formação, Sobre, Contato e Currículo, e é alcançável por teclado em qualquer estado da cena.

@@ -36,3 +36,12 @@ test_runner_filter_selects_tests() {
   assert_code 0
   assert_contains "1 passaram, 0 falharam."
 }
+
+# scripts/verify.sh mostra só o fim da saída de uma etapa que falha.
+test_runner_ends_by_naming_the_failed_tests() {
+  make_suite
+  run "$TMP/suite/run.sh"
+  assert_code 1
+  [[ "$(tail -n 2 <<< "$OUT")" == *"test-sample › test_middle_assertion_fails"* ]] ||
+    fail "o resumo final não nomeia o teste que falhou. Saída:"$'\n'"$OUT"
+}

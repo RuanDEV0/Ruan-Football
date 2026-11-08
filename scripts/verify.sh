@@ -3,7 +3,7 @@
 # para que "passou" signifique a mesma coisa em todos (docs/ai/guides/quality.md).
 #
 # Uso: scripts/verify.sh [--full] [--root DIR] [--files ARQUIVO...]
-#   (padrão)  harness + aplicação: check, lint, test e build
+#   (padrão)  harness + aplicação: check, lint, test, build e orçamentos de bundle
 #   --full    inclui pnpm test:e2e e test:performance
 #   --files   modo rápido: verifica apenas o que os arquivos informados afetam
 #             (usado pelo hook Stop do Claude Code)
@@ -12,6 +12,8 @@
 set -uo pipefail
 
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+# shellcheck source=lib/node.sh
+. "$(dirname "${BASH_SOURCE[0]}")/lib/node.sh"
 full=0
 files_mode=0
 app_config_changed=0
@@ -110,18 +112,20 @@ if [ "$want_harness_tests" -eq 1 ]; then
   fi
 fi
 
-# O Astro recusa Node fora do intervalo do package.json com um erro que parece falha do projeto.
 check_node() {
   local want have
   want=$(tr -d '[:space:]v' < .nvmrc)
-  have=$(node --version 2>/dev/null) || { echo "node não encontrado no PATH"; return 1; }
-  have=${have#v}
-  if [ "${have%%.*}" != "${want%%.*}" ] ||
-     [ "$(printf '%s\n%s\n' "$want" "$have" | sort -V | head -n 1)" != "$want" ]; then
-    echo "Node v$have ativo; o projeto pede $want (.nvmrc). Rode: nvm use"
-    return 1
+  if node_matches "$want"; then
+    echo "Node $(node --version)"
+    return 0
   fi
-  echo "Node v$have"
+  have=$(node --version 2>/dev/null) || have="ausente"
+  if activate_nvm "$want" && node_matches "$want"; then
+    echo "Node $(node --version), ativado pelo nvm (antes: $have)"
+    return 0
+  fi
+  node_mismatch_hint "$want" "$have"
+  return 1
 }
 
 has_script() { jq -e --arg s "$1" '.scripts[$s] // empty' package.json >/dev/null 2>&1; }
@@ -164,6 +168,15 @@ if [ "$want_app" -eq 1 ]; then
     pnpm_step test
     build_ok=1
     pnpm_step build || build_ok=0
+    if [ "$build_ok" -eq 1 ] && has_script build; then
+      if [ ! -x scripts/check-budgets.sh ]; then
+        skip "orçamentos de bundle" "scripts/check-budgets.sh ausente"
+      elif [ ! -d dist/_astro ]; then
+        skip "orçamentos de bundle" "build não gerou dist/_astro"
+      else
+        step "orçamentos de bundle" scripts/check-budgets.sh --root "$root"
+      fi
+    fi
     if [ "$full" -eq 1 ] && [ "$build_ok" -eq 0 ]; then
       # Lighthouse lê dist/ direto: sem build novo ele mediria a versão anterior e passaria.
       skip "pnpm test:e2e" "build falhou nesta execução"

@@ -1,17 +1,19 @@
 # Etapa 1 — Consolidação editorial e roteiro
 
-Fonte principal: currículo, texto do perfil GitHub e material enviados por Ruan nesta conversa. Rascunho para revisão; não representa aprovação para publicação dos estudos de caso. Identificação, apresentação e contatos confirmados ficam em `src/data/profile.ts`, consumidos pelo site, sem repetir os endereços neste documento.
+Fonte principal: currículo, texto do perfil GitHub e material enviados por Ruan nesta conversa. Base inicial aprovada por Ruan; estudos de caso completos continuam sujeitos à complementação e revisão de publicação. Identificação, apresentação e contatos confirmados ficam em `src/data/profile.ts`, consumidos pelo site, sem repetir os endereços neste documento.
 
 ## Situação das etapas
 
 A Etapa 0 tem a base local pronta; prévia externa e CI remota continuam pendentes. Este envio inicia a parte editorial da Etapa 1. As capturas podem ser entregues depois, conforme solicitado por Ruan; elas pertencem à preparação de evidências e ao acabamento, e não impedem o trabalho editorial atual.
+
+**Encerramento em 07/11/2026:** Ruan aprovou a composição do campo, a apresentação e as informações iniciais exibidas na revisão local. A Etapa 1 está concluída com essa base inicial, conforme `docs/decisoes/0005-etapa-1-base-editorial-aprovada.md`. A complementação de períodos, status, participação, decisões, aprendizados e evidências segue nas Etapas 3 e 5. A aprovação do personagem definitivo pertence à Etapa 4. Os marcadores de pendência continuam válidos até Ruan fornecer cada informação.
 
 O currículo recebido contém os dados necessários para montar uma versão revisada, mas ainda há divergências de nomes, status e autoria. Não foi gerado um PDF definitivo com essas lacunas.
 
 ## Apresentação e currículo
 
 - Manter a identificação curta e o posicionamento profissional aprovados no plano. Nome completo e apresentação pessoal foram incorporados à fonte de perfil.
-- Objetivo editorial proposto: “Busco uma oportunidade como desenvolvedor de software júnior, com foco em backend, APIs e aplicações web.” Texto para revisão de Ruan.
+- Objetivo editorial proposto: “Busco uma oportunidade como desenvolvedor de software júnior, com foco em backend, APIs e aplicações web.” Texto inicial aprovado por Ruan.
 - Organizar currículo em apresentação, experiência, projetos, formação e certificações/cursos. Associar tecnologias aos trabalhos em que foram utilizadas, sem barras de nível.
 - O telefone foi fornecido no currículo. [[PENDENTE: confirmar inclusão do telefone no PDF público]]. Os canais de contato do site seguem e-mail, LinkedIn e GitHub, como aprovado na decisão 12.8.
 - [[PENDENTE: aprovação do texto final e geração do currículo em PDF]].
@@ -32,7 +34,7 @@ Os schemas exigem meses e status em alguns desses registros. Os campos desconhec
 
 ## Estrutura dos estudos de caso
 
-Os projetos abaixo ainda são rascunhos editoriais. Antes de migrar para as coleções: confirmar períodos, status, participação, evidências e revisão de publicação. A ordem de destaque permanece a do plano: Sírius como candidato sujeito à autorização; InspectGov; EcoWeb ou Cofrinho conforme autoria e evidências. Os dois projetos Spring são complementares.
+Os textos iniciais dos projetos abaixo foram aprovados; os casos completos continuam como rascunhos editoriais. Antes de migrar para as coleções: confirmar períodos, status, participação, evidências e revisão de publicação. A ordem de destaque permanece a do plano: Sírius como candidato sujeito à autorização; InspectGov; EcoWeb ou Cofrinho conforme autoria e evidências. Os dois projetos Spring são complementares.
 
 ### Inspect Gov RR
 
@@ -106,9 +108,9 @@ Roteiro baseado nas seções 1, 2 e 5 do plano aprovado:
 6. Bola e gol: vídeo do pênalti em etapa posterior.
 7. Contato e currículo: sempre disponíveis no menu, inclusive no modo leve.
 
-Composição de trabalho: campo society compacto e fictício, alambrado, banco lateral, placar e gol, com pontos de vista guiados. A distribuição espacial será testada no blockout da Etapa 2; não há cenário definitivo aprovado nesta entrega. Detalhes pessoais podem usar vermelho e preto, sem escudo ou nome de clube.
+Composição aprovada: campo society compacto e fictício, alambrado, banco lateral, placar, dois gols e área de entrada com quiosque, depósito, banheiro, cadeiras, futebol de sabão e pula-pula. A distribuição espacial foi avaliada no blockout da Etapa 2; os objetos e materiais definitivos continuam para etapas posteriores. Detalhes pessoais podem usar vermelho e preto, sem escudo ou nome de clube.
 
-Personagem: descrição e fotos recebidas em 07/11/2026; decisões em `docs/conteudo/personagem.md` e folha de referência em `assets-src/referencias/folha-boneco.html`. [[PENDENTE: referências visuais do campo e validação da composição]]. As capturas dos projetos não substituem essas referências.
+Personagem: descrição e fotos recebidas em 07/11/2026; decisões em `docs/conteudo/personagem.md` e folha de referência em `assets-src/referencias/folha-boneco.html`. Ruan aprovou a composição do campo e a orientação dos boxes após avaliar o protótipo da Etapa 2. Esse protótipo funciona como referência visual do ambiente para a Etapa 1; as capturas dos projetos não o substituem.
 
 ## Revisão e validação
 
@@ -161,3 +163,36 @@ Ruan declarou ter autorização das outras pessoas que aparecem no vídeo. A pen
 - Manter o foco profissional em backend e APIs, usando os projetos para demonstrar coleta de dados, persistência, integrações e organização do código conforme as evidências locais já registradas.
 - Apresentar o Sírius como desenvolvimento integral em homologação, nos limites da autorização de citação já recebida.
 - Usar o vídeo como elemento pessoal opcional; o consentimento recebido permite avançar na preparação prevista para a Etapa 6. A publicação técnica segue a autorização de Git/hospedagem do projeto.
+
+## Revisão disponível na prévia local
+
+A pedido de Ruan, a página `/revisao` reúne a apresentação de `src/data/profile.ts` e os rascunhos e perguntas deste roteiro, sem criar outra fonte de fatos profissionais. O link “Revisar conteúdo da Etapa 1” aparece na página inicial ao executar `pnpm dev`. Respostas e correções devem ser enviadas na conversa; a página não grava respostas nem concede aprovação automaticamente.
+
+A rota é registrada apenas no servidor de desenvolvimento e não existe no build estático. Os registros `publishable: false` continuam sem páginas públicas. As perguntas de períodos, status e participação aparecem abertas; detalhes dos futuros estudos de caso ficam em seções expansíveis. A composição do campo já aprovada não volta a ser solicitada.
+
+Verificação: o teste de navegação falhou antes da implementação por ausência do link e passou após a implementação. Há teste separado de exclusão da rota e do link no site estático, além de axe e verificação de largura em 320px. `scripts/verify.sh --full` passou integralmente, incluindo os testes da revisão nos quatro perfis de navegador e Lighthouse, sem etapas puladas. Capturas em 1280px e 320px foram conferidas. O build não contém a rota nem os textos exclusivos da revisão; o JavaScript inicial continua com 1.787 bytes gzip e a cena opcional com 134.045 bytes gzip. Não houve novas dependências. Aparelhos físicos continuam pendentes. A aprovação editorial inicial foi recebida posteriormente e está registrada no encerramento desta etapa.
+
+
+## Padrão editorial para completar os projetos
+
+Começar cada projeto com uma frase que explique o problema e outra que resuma a contribuição de Ruan. A leitura rápida deve permitir entender para quem o projeto serve, o que ele fez e onde conferir a implementação. Escolher um fluxo representativo para aprofundar, com decisões explicadas e evidências próximas ao texto. Tecnologias aparecem ligadas ao papel que tiveram na solução.
+
+Manter a ordem da seção 7 do plano em todos os casos:
+
+1. **Problema:** quem precisava resolver o quê, em uma ou duas frases concretas.
+2. **Minha participação:** responsabilidades e funcionalidades implementadas por Ruan, separadas das contribuições da equipe. Incluir período e status confirmados na identificação do caso.
+3. **Solução:** explicar um fluxo de ponta a ponta e o papel das tecnologias realmente utilizadas; manter um resumo curto antes do detalhe técnico.
+4. **Decisões técnicas:** apresentar uma ou duas escolhas relevantes, a restrição que motivou cada uma e as alternativas realmente consideradas. Comparações posteriores devem ser identificadas como análise atual.
+5. **Evidências:** demonstrar o fluxo com telas reais, diagrama, exemplo de requisição/resposta ou testes. Relatar resultados observados; números somente com fonte, cenário e método de medição. Se não houver métrica, usar uma evidência qualitativa verificável.
+6. **Aprendizados:** explicar uma dificuldade enfrentada, o que mudou na compreensão de Ruan e o que ele melhoraria hoje, conforme seu relato.
+7. **Links disponíveis:** oferecer repositório, demonstração e evidências autorizadas, identificando demonstrações com mocks e limitações conhecidas.
+
+Para a apresentação curta, usar o mesmo recorte em cada projeto: nome, problema, contribuição principal, tecnologias centrais e acesso ao caso completo. Preencher esses itens somente quando houver dados suficientes; não criar promessas de impacto ou resultados para tornar o texto mais atraente.
+
+Antes de promover um caso a publicável, resolver suas pendências e seguir `docs/ai/procedures/review-content.md`. A aprovação inicial não equivale à liberação de materiais institucionais adicionais.
+
+## Verificação do encerramento
+
+Após registrar a aprovação e mostrar o padrão na revisão local, `scripts/verify.sh --full` passou integralmente, sem etapas puladas: documentação, assets, sintaxe shell, ShellCheck, harness, versão do Node, tipos, lint, testes unitários, build, testes de navegador e Lighthouse. O teste atualizado falhou antes de mostrar a aprovação e o padrão e passou após a implementação. A revisão foi conferida visualmente em capturas de tela larga e estreita.
+
+Orçamentos do build: entrada com 1.787 bytes gzip e cena/Three.js com 134.045 bytes gzip; nenhuma dependência ou asset novo. A rota de revisão continua ausente do build estático. Aparelhos físicos, CI remota e hospedagem continuam sem verificação. As lacunas profissionais e autorizações específicas ainda listadas neste roteiro permanecem para complementação e revisão dos respectivos casos.

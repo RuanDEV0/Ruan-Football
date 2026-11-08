@@ -42,6 +42,7 @@ docs/ai/
 | `settings.json`               | Permissões compartilhadas: libera os comandos de verificação; pede confirmação para `git commit`, `git push`, `pnpm add` e deploy; bloqueia `.env` e `push --force`; liga os hooks |
 | `hooks/format-file.sh`        | PostToolUse: Prettier no arquivo editado (a partir da Etapa 0)                                                                                                                     |
 | `hooks/track-edit.sh`         | PostToolUse: registra os arquivos editados na sessão em `.claude/.state/`                                                                                                          |
+| `hooks/close-processes.sh`    | Hook Stop: fecha os grupos registrados somente após a marca de aprovação explícita do ciclo                                                                                        |
 | `hooks/verify-on-stop.sh`     | Stop: roda `scripts/verify.sh --files` nos arquivos editados; em falha, devolve ao agente uma única vez                                                                            |
 | `rules/`                      | Lembretes por caminho que remetem aos guias                                                                                                                                        |
 | `skills/`                     | Atalhos para os procedimentos                                                                                                                                                      |
@@ -66,6 +67,8 @@ Preferências pessoais ficam em `.claude/settings.local.json` e `CLAUDE.local.md
 | `scripts/verify.sh`              | Ponto único de verificação para agentes, hook Stop e CI; relata cada etapa como `ok`, `FALHOU` ou `pulado`                                                                 |
 | `scripts/check-ai-docs.sh`       | Arquivos obrigatórios, imports, tamanho do `AGENTS.md`, adaptadores por guia, frontmatter e referências (inclusive README, relatórios de etapa, ADRs e registro de origem) |
 | `scripts/check-assets.sh`        | Registro de origem das referências, fotos e vídeo fora do Git, vídeo só em `public/video/` e marca de referência do boneco fora dos textos                                 |
+| `scripts/processes.sh`           | Registro e encerramento dos processos de cada ciclo após validação de Ruan; consumido pelo hook `.claude/hooks/close-processes.sh`                                         |
+| `scripts/lib/node.sh`            | Checagem e ativação pelo nvm da versão do `.nvmrc`, usada por `verify.sh` e por `processes.sh start`                                                                       |
 | `tests/harness/`                 | Testes de scripts e hooks em fixtures isoladas, inclusive do próprio runner                                                                                                |
 | `.shellcheckrc`, `.editorconfig` | Padrão de shell e de formatação                                                                                                                                            |
 | `.github/workflows/ci.yml`       | Roda `scripts/verify.sh` em cada PR (com `shellcheck`)                                                                                                                     |

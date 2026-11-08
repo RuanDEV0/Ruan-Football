@@ -5,8 +5,10 @@ import '@/styles/global.css';
 interface Props {
   title: string;
   description: string;
+  /** Home em tela cheia com a cena (ADR 0006). */
+  immersive?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, immersive = false } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 ---
 
@@ -20,7 +22,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <meta name="robots" content="noindex, nofollow" />
     {canonical && <link rel="canonical" href={canonical} />}
   </head>
-  <body>
+  <body class:list={[{ immersive }]}>
     <a class="skip-link" href="#conteudo">
       Pular para o conteúdo
     </a>
@@ -28,7 +30,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
       <a href="/" aria-label={`${profile.name} — início`}>
         {profile.name}
       </a>
-      <Menu />
+      <Menu collapsible={immersive} />
     </header>
     <main id="conteudo" tabindex="-1">
       <slot />

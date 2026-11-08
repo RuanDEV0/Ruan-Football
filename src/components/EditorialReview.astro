@@ -1,0 +1,179 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { profile } from '@/data/profile';
+
+const documents = import.meta.glob<string>('/docs/conteudo/etapa-1.md', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+});
+const editorial = documents['/docs/conteudo/etapa-1.md'];
+if (!editorial) throw new Error('O roteiro editorial da Etapa 1 não foi encontrado.');
+
+function plainText(text: string): string {
+  return text
+    .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1')
+    .replace(/\*\*/g, '')
+    .replace(/^\d+\.\s*/, '')
+    .trim();
+}
+const presentation = editorial.split('## Apresentação e currículo')[1]?.split('\n## ')[0] ?? '';
+const objective = presentation
+  .split('\n')
+  .find((line) => line.startsWith('- Objetivo editorial proposto:'));
+const projectPattern = (editorial.split('## Padrão editorial para completar os projetos')[1] ?? '')
+  .split('\n')
+  .filter((line) => /^\d+\. /.test(line))
+  .map(plainText);
+const projectsSection =
+  editorial.split('## Estrutura dos estudos de caso')[1]?.split('\n## ')[0] ?? '';
+const projects = projectsSection
+  .split('\n### ')
+  .slice(1)
+  .filter((section) => !section.startsWith('Projetos complementares'))
+  .map((section) => {
+    const [title = '', ...lines] = section.split('\n');
+    const text = lines.join('\n');
+    const pending = [...text.matchAll(/\[\[PENDENTE: ([\s\S]*?)\]\]/g)]
+      .map((match) => match[1]?.trim())
+      .filter((value): value is string => Boolean(value));
+    return {
+      title,
+      paragraphs: lines
+        .filter((line) => /^(1|2|3)\.|^Texto factual preparado/.test(line))
+        .map((line) => plainText(line.replace(/\[\[PENDENTE:[\s\S]*?\]\]/g, ''))),
+      current: pending.filter((question) =>
+        /período|status|funcionalidades e decisões implementadas|delimitar/.test(question),
+      ),
+      later: pending.filter(
+        (question) =>
+          !/período|status|funcionalidades e decisões implementadas|delimitar/.test(question),
+      ),
+    };
+  });
+---
+
+<BaseLayout
+  title="Revisão da Etapa 1"
+  description="Textos e informações para a revisão local de Ruan."
+>
+  <p class="eyebrow">Base inicial aprovada por Ruan</p>
+  <h1>Revisão da Etapa 1</h1>
+  <p>
+    Os textos iniciais foram aprovados. Complete as informações dos projetos posteriormente,
+    seguindo o padrão abaixo, e envie as atualizações nesta conversa. Esta página não salva
+    respostas.
+  </p>
+  <p>
+    A Etapa 1 está concluída com a base inicial aprovada. As lacunas sinalizadas serão completadas
+    nas Etapas 3 e 5, antes da publicação dos casos.
+  </p>
+  <section aria-labelledby="presentation-title">
+    <h2 id="presentation-title">Sua apresentação</h2>
+    <p>
+      {profile.fullName} · {profile.location}
+    </p>
+    <p>{profile.title}</p>
+    <blockquote>{profile.bio}</blockquote>
+    {objective && (
+      <p>
+        {plainText(
+          objective
+            .replace(/^- /, '')
+            .replace('Objetivo editorial proposto:', 'Objetivo profissional:'),
+        )}
+      </p>
+    )}
+    <p class="question">
+      Apresentação e objetivo profissional iniciais aprovados. Você pode enviar ajustes nesta
+      conversa quando quiser.
+    </p>
+  </section>
+  <section aria-labelledby="pattern-title">
+    <h2 id="pattern-title">Padrão para completar cada projeto</h2>
+    <p>
+      Comece pelo problema e pela sua contribuição. Depois, mostre um fluxo representativo, explique
+      suas decisões e apresente evidências do que funciona.
+    </p>
+    <ol>
+      {projectPattern.map((item) => (
+        <li>{item}</li>
+      ))}
+    </ol>
+    <p>
+      Na apresentação curta: nome, problema, contribuição principal, tecnologias centrais e acesso
+      ao caso completo. Resultados e métricas precisam de evidências.
+    </p>
+  </section>
+  <section aria-labelledby="projects-title">
+    <h2 id="projects-title">Projetos — complementação posterior</h2>
+    <p>
+      Os resumos iniciais estão aprovados. As datas, os detalhes de participação e as demais
+      informações ainda ausentes continuam identificados abaixo para completar depois.
+    </p>
+    {projects.map((project) => (
+      <article>
+        <h3>{project.title}</h3>
+        {project.paragraphs.map((paragraph) => (
+          <p>{paragraph}</p>
+        ))}
+        {project.current.map((question) => (
+          <p class="question">A confirmar: {question}</p>
+        ))}
+        {project.later.length > 0 && (
+          <details>
+            <summary>Pendências do estudo de caso para etapas seguintes</summary>
+            <ul>
+              {project.later.map((question) => (
+                <li>{question}</li>
+              ))}
+            </ul>
+          </details>
+        )}
+      </article>
+    ))}
+  </section>
+  <section aria-labelledby="later-title">
+    <h2 id="later-title">Para depois</h2>
+    <p>
+      Capturas, estudos de caso completos, currículo final em PDF e personagem definitivo seguem nas
+      respectivas etapas. As pendências já registradas continuam disponíveis para quando você reunir
+      o material.
+    </p>
+  </section>
+  <a class="button" href="/">
+    Voltar ao campo
+  </a>
+</BaseLayout>
+<style>
+  section {
+    margin-block: var(--space-5);
+  }
+  article {
+    padding: var(--space-3);
+    margin-block: var(--space-3);
+    border: var(--border) solid var(--color-line);
+    border-radius: var(--radius);
+    background: var(--color-surface);
+  }
+  blockquote {
+    margin-inline: 0;
+    padding: var(--space-3);
+    border-left: var(--border) solid var(--color-accent);
+    max-width: var(--size-reading);
+  }
+  .question {
+    padding: var(--space-2);
+    border-left: var(--border) solid var(--color-focus);
+  }
+  summary {
+    cursor: pointer;
+    min-height: var(--size-touch);
+    padding-block: var(--space-1);
+  }
+  p,
+  li,
+  h3 {
+    overflow-wrap: anywhere;
+  }
+</style>
